@@ -8,8 +8,8 @@ import {
   SlashCommandBuilder
 } from "discord.js"
 
+import { newWord, RUNNING, WORD } from "../../utils/loadWord.ts"
 import { error } from "../../utils/logger.ts"
-import { newWord, RUNNING, WORD } from "../../utils/word.ts"
 
 const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
   return new SlashCommandBuilder()

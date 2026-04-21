@@ -1,9 +1,9 @@
 import { ActivityType, Client, Events, GatewayIntentBits, type Message } from "discord.js"
 
 import { closeDatabase } from "./db.ts"
+import { checkWord } from "./loadWord.ts"
 import { info } from "./logger.ts"
 import { SERVER } from "./logo.ts"
-import { checkWord } from "./word.ts"
 
 let CLIENT: Client | null = null
 

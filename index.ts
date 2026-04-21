@@ -3,9 +3,9 @@ import { type Client } from "discord.js"
 import { loadCommands } from "./events/loadCommands.ts"
 import { client, login, shutdown } from "./utils/client.ts"
 import { openDatabase } from "./utils/db.ts"
+import { loadSettings, startWord } from "./utils/loadWord.ts"
 import { error, info } from "./utils/logger.ts"
 import { logo } from "./utils/logo.ts"
-import { loadSettings, startWord } from "./utils/word.ts"
 
 Bun.env.DEBUG = Bun.env.IS_DEBUG === "true" ? true : false
 

@@ -75,13 +75,13 @@ const checkWord = async (message: Message): Promise<void> => {
           throw new Error("Invalid channel")
         }
 
-        await updatePoints(name).then(
-          async (): Promise<Message> =>
-            await (channel as TextChannel).send({
-              content: `-# > \`${name}\` said \`${WORD}\`!`,
-              flags: MessageFlags.SuppressNotifications
-            })
-        )
+        await (channel as TextChannel).send({
+          content: `-# > \`${name}\` said \`${WORD}\`!`,
+          flags: MessageFlags.SuppressNotifications
+        })
+      })
+      .then(async (): Promise<void> => {
+        await updatePoints(name)
 
         if (Bun.env.DEBUG) {
           info(`${name} said ${WORD}`)
