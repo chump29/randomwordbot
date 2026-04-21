@@ -1,5 +1,5 @@
-import { readdir } from "fs/promises"
-import { parse } from "path"
+import { readdir } from "node:fs/promises"
+import { parse } from "node:path"
 
 import { type Client, type RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js"
 
