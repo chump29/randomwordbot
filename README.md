@@ -22,6 +22,7 @@
 |:------------------:|
 |    ViewChannel     |
 |    SendMessages    |
+|     EmbedLinks     |
 | ReadMessageHistory |
 
 #### Commands:
