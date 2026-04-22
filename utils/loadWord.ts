@@ -12,6 +12,8 @@ let WORD: string = ""
 let MAX: number = 0
 let MIN: number = 3
 
+let COUNT: string = ""
+
 let RUNNING: boolean = false
 
 interface IOptions {
@@ -39,8 +41,10 @@ const loadSettings = (client: Client): void => {
   MAX = isNaN(Number(Bun.env.MAX_LENGTH)) ? 0 : Number(Bun.env.MAX_LENGTH)
   MIN = isNaN(Number(Bun.env.MIN_LENGTH)) ? MIN : Number(Bun.env.MIN_LENGTH)
 
+  COUNT = count(getOptions()).toLocaleString()
+
   if (Bun.env.DEBUG) {
-    info(`Loaded ${count(getOptions())} words`)
+    info(`Loaded ${COUNT} words`)
   }
 }
 
@@ -109,4 +113,4 @@ const stopWord = (): void => {
   }
 }
 
-export { checkWord, loadSettings, newWord, RUNNING, startWord, stopWord, WORD }
+export { COUNT, checkWord, loadSettings, newWord, RUNNING, startWord, stopWord, WORD }

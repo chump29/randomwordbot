@@ -1,6 +1,7 @@
 import { parse } from "node:path"
 
 import {
+  type APIEmbedField,
   type ChatInputCommandInteraction,
   EmbedBuilder,
   InteractionContextType,
@@ -11,6 +12,7 @@ import {
 } from "discord.js"
 
 import { checkRate } from "../../utils/checkRate.ts"
+import { COUNT } from "../../utils/loadWord.ts"
 import { error } from "../../utils/logger.ts"
 
 const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
@@ -39,6 +41,11 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
           })
           .setThumbnail(Bun.env.LOGO_URL)
           .setDescription("- Listens for random word")
+          .setFields({
+            inline: true,
+            name: "Total Words:",
+            value: COUNT
+          } as APIEmbedField)
           .setFooter({
             text: "By Chris Post"
           })
