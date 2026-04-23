@@ -1,7 +1,6 @@
 declare module "bun" {
   interface Env {
     AUTOSTART: string
-    CHANNEL_ID: string
     DB_NAME: string
     DB_PATH: string
     DEBUG: boolean
