@@ -4,13 +4,20 @@
 
 ---
 
-![Biome](https://img.shields.io/badge/Biome-^2.4.12-informational?style=plastic&logo=biome) &nbsp;
-![Bun](https://img.shields.io/badge/Bun-~1.3.12-informational?style=plastic&logo=bun) &nbsp;
-![discord.js](https://img.shields.io/badge/discord.js-^14.26.3-informational?style=plastic&logo=discord.js) &nbsp;
+![Biome](https://img.shields.io/badge/Biome-^2.4.13-informational?style=plastic&logo=biome) &nbsp;
+![Bun](https://img.shields.io/badge/Bun-~1.3.13-informational?style=plastic&logo=bun) &nbsp;
+![discord.js](https://img.shields.io/badge/discord.js-^14.26.4-informational?style=plastic&logo=discord.js) &nbsp;
 ![Drizzle](https://img.shields.io/badge/Drizzle-1.0.0--beta.22-informational?style=plastic&logo=drizzle)
+![SQLite](https://img.shields.io/badge/SQLite-3.49.2-informational?style=plastic&logo=sqlite)
 
 ![CodeQL](https://github.com/chump29/randomwordbot/workflows/CodeQL/badge.svg) &nbsp;
 ![License](https://img.shields.io/github/license/chump29/randomwordbot?style=plastic&color=blueviolet&label=License&logo=gplv3)
+
+---
+
+### 🔗 Invite Link <!-- markdownlint-disable-line MD001 -->
+
+[Add RandomWordBot](https://discord.com/oauth2/authorize?client_id=1496090376824688690&permissions=84992&integration_type=0&scope=bot)
 
 ---
 

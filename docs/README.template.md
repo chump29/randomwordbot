@@ -8,9 +8,16 @@
 ![Bun](https://img.shields.io/badge/Bun-$_bun-informational?style=plastic&logo=bun) &nbsp;
 ![discord.js](https://img.shields.io/badge/discord.js-$_discord-informational?style=plastic&logo=discord.js) &nbsp;
 ![Drizzle](https://img.shields.io/badge/Drizzle-$_drizzle-informational?style=plastic&logo=drizzle)
+![SQLite](https://img.shields.io/badge/SQLite-$_sqlite-informational?style=plastic&logo=sqlite)
 
 ![CodeQL](https://github.com/chump29/randomwordbot/workflows/CodeQL/badge.svg) &nbsp;
 ![License](https://img.shields.io/github/license/chump29/randomwordbot?style=plastic&color=blueviolet&label=License&logo=gplv3)
+
+---
+
+### 🔗 Invite Link <!-- markdownlint-disable-line MD001 -->
+
+[Add RandomWordBot](https://discord.com/oauth2/authorize?client_id=1496090376824688690&permissions=84992&integration_type=0&scope=bot)
 
 ---
 
