@@ -11,7 +11,7 @@
 ![SQLite](https://img.shields.io/badge/SQLite-3.49.2-informational?style=plastic&logo=sqlite)
 
 ![CodeQL](https://github.com/chump29/randomwordbot/workflows/CodeQL/badge.svg) &nbsp;
-![Coverage](https://img.shields.io/badge/Coverage-96.83%25-success?style=plastic&logo=jest)
+![Coverage](https://img.shields.io/badge/Coverage-97.53%25-success?style=plastic&logo=jest)
 
 ![License](https://img.shields.io/github/license/chump29/randomwordbot?style=plastic&color=blueviolet&label=License&logo=gplv3)
 
@@ -119,12 +119,16 @@
 |        Debug        |  IS_DEBUG   |  true/**false**  |
 |      Logo URL       |  LOGO_URL   |      [url]       |
 | Maximum Word Length | MAX_LENGTH  |  0<sup>1</sup>   |
-| Minimum Word Length | MIN_LENGTH  |        3         |
+| Minimum Word Length | MIN_LENGTH  | 3<sup>2,3</sup>  |
 |      Bot Name       |    NAME     |  RandomWordBot   |
 |    Award Points     |   POINTS    |        1         |
 |      Bot Token      |    TOKEN    |     [token]      |
 
 <sup>1</sup> 0=disable (will default to *maximum* word length)
+
+<sup>2</sup> 0=disable (will default to *minimum* word length)
+
+<sup>3</sup> Minimum is 2 (limited by words list)
 
 ##### From `@postfmly/logoserver`:
 

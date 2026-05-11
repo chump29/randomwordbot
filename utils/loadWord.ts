@@ -11,6 +11,7 @@ let CLIENT: Client | null = null
 
 let WORD: string | null = null
 
+const MIN_POSSIBLE: number = 2
 const MIN_DEFAULT: number = 3
 const MAX_DEFAULT: number = 0
 let MIN: number = 0
@@ -30,6 +31,10 @@ const loadSettings = async (client: Client): Promise<void> => {
   MIN = isNaN(Number(Bun.env.MIN_LENGTH)) ? MIN_DEFAULT : Number(Bun.env.MIN_LENGTH)
   MAX = isNaN(Number(Bun.env.MAX_LENGTH)) ? MAX_DEFAULT : Number(Bun.env.MAX_LENGTH)
 
+  if (MIN === 0) {
+    MIN = MIN_POSSIBLE
+  }
+
   if (MAX < MIN) {
     MAX = MIN
   }
@@ -38,10 +43,6 @@ const loadSettings = async (client: Client): Promise<void> => {
     maxLength: MAX,
     minLength: MIN
   })
-
-  if (!COUNT) {
-    throw new Error("No words")
-  }
 
   if (Bun.env.DEBUG) {
     info(`Loaded ${pluralize("word", COUNT, true)}`)

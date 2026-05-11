@@ -58,16 +58,6 @@ describe("loadWords", (): void => {
     expect(COUNT).toBeGreaterThan(0)
   })
 
-  test("loadSettings - no words", async (): Promise<void> => {
-    mock.module("random-words", (): unknown => {
-      return {
-        count: jest.fn().mockReturnValue(0)
-      }
-    })
-
-    expect(loadSettings(client)).rejects.toThrowError("No words")
-  })
-
   test("newWord", async (): Promise<void> => {
     mock.module("random-words", (): unknown => {
       return {

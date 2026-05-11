@@ -119,12 +119,16 @@
 |        Debug        |  IS_DEBUG   |  true/**false**  |
 |      Logo URL       |  LOGO_URL   |      [url]       |
 | Maximum Word Length | MAX_LENGTH  |  0<sup>1</sup>   |
-| Minimum Word Length | MIN_LENGTH  |        3         |
+| Minimum Word Length | MIN_LENGTH  | 3<sup>2,3</sup>  |
 |      Bot Name       |    NAME     |  RandomWordBot   |
 |    Award Points     |   POINTS    |        1         |
 |      Bot Token      |    TOKEN    |     [token]      |
 
 <sup>1</sup> 0=disable (will default to *maximum* word length)
+
+<sup>2</sup> 0=disable (will default to *minimum* word length)
+
+<sup>3</sup> Minimum is 2 (limited by words list)
 
 ##### From `@postfmly/logoserver`:
 
