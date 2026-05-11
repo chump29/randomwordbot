@@ -8,8 +8,9 @@ import {
   SlashCommandBuilder
 } from "discord.js"
 
+import pluralize from "pluralize"
+
 import { WORD } from "../../utils/loadWord.ts"
-import { error } from "../../utils/logger.ts"
 
 const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
   return new SlashCommandBuilder()
@@ -20,15 +21,16 @@ const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
 }
 
 const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> => {
-  await interaction
-    .reply({
-      content: `-# > 💬 Listening for \`${WORD.length ? WORD : "N/A"}\``,
-      flags: MessageFlags.Ephemeral
-    })
-    .catch((e: unknown): void => {
-      error(e)
-      throw e
-    })
+  let content: string = `-# > ❌ ${Bun.env.NAME} is not running`
+  if (WORD) {
+    const points: number = isNaN(Number(Bun.env.POINTS)) ? 1 : Number(Bun.env.POINTS)
+    content = `-# > 💬 Listening for \`${WORD}\` worth ${pluralize("point", points, true)}`
+  }
+
+  await interaction.reply({
+    content: content,
+    flags: MessageFlags.Ephemeral
+  })
 }
 
 export { create, invoke }

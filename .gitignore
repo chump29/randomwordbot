@@ -1,4 +1,5 @@
 .env.local
 .vscode/
-db/randomwordbot.db
+coverage/
+db/randomwordbot*
 node_modules/

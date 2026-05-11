@@ -15,7 +15,7 @@ interface IInteractionCreate {
 }
 
 interface ICommandFile {
-  create(): RESTPostAPIChatInputApplicationCommandsJSONBody
+  create(): Promise<RESTPostAPIChatInputApplicationCommandsJSONBody>
   invoke(interaction: ChatInputCommandInteraction): Promise<void>
 }
 

@@ -2,14 +2,20 @@ import { mkdir } from "node:fs/promises"
 
 import { Database, SQLiteError } from "bun:sqlite"
 
-import { desc, eq } from "drizzle-orm"
+import { info } from "@postfmly/logger"
+
+import { desc, eq, sql } from "drizzle-orm"
 import { drizzle, type SQLiteBunDatabase } from "drizzle-orm/bun-sqlite"
 
 import { type IUser, users } from "../db/schema.ts"
-import { info } from "./logger.ts"
 
 let SQLITE: Database | null = null
+let TEST_SQLITE: Database | null = null
 let DB: SQLiteBunDatabase | null = null
+const TEST_DB: SQLiteBunDatabase | null = null
+
+Bun.env.DB_NAME = Bun.env.DB_NAME || "wordjumblebot.db"
+Bun.env.DB_PATH = Bun.env.DB_PATH || "./db/"
 
 const openDatabase = async (): Promise<void> => {
   await mkdir(Bun.env.DB_PATH, {
@@ -17,15 +23,28 @@ const openDatabase = async (): Promise<void> => {
   })
 
   const DB_STR: string = `${Bun.env.DB_PATH}${Bun.env.DB_NAME}`
+
   SQLITE = new Database(DB_STR, {
     create: true,
     strict: true
   })
-  DB = drizzle({
-    client: SQLITE
-  })
-  DB.run("PRAGMA journal_mode = WAL;")
-  DB.run("PRAGMA wal_checkpoint(TRUNCATE);")
+
+  if (Bun.env.NODE_ENV === "test") {
+    TEST_SQLITE = SQLITE
+  }
+
+  DB =
+    TEST_DB ??
+    drizzle({
+      client: SQLITE,
+      jit: true
+    })
+
+  DB.run(
+    sql.raw(`
+      PRAGMA journal_mode = WAL;
+      PRAGMA wal_checkpoint(TRUNCATE);`)
+  )
 
   try {
     await DB.select().from(users)
@@ -35,13 +54,13 @@ const openDatabase = async (): Promise<void> => {
         info("Creating tables...")
       }
 
-      const table: string = `
-      CREATE TABLE users(
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL UNIQUE,
-        points INTEGER NOT NULL
-      )`
-      SQLITE.run(table)
+      DB.run(
+        sql.raw(`
+          CREATE TABLE users(
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL UNIQUE,
+            points INTEGER NOT NULL);`)
+      )
     } else {
       throw e
     }
@@ -57,15 +76,19 @@ const getPoints = async (name: string): Promise<number> => {
     throw new Error("Database not open")
   }
 
-  const user: IUser[] = await DB.select().from(users).where(eq(users.name, name)).limit(1)
-  if (!user[0]) {
+  const [user]: IUser[] = await DB.select().from(users).where(eq(users.name, name)).limit(1)
+  if (!user) {
     return 0
   }
 
-  return user[0].points
+  return user.points
 }
 
 const updatePoints = async (name: string): Promise<void> => {
+  if (!name.length) {
+    throw new Error("Invalid name")
+  }
+
   if (!DB) {
     throw new Error("Database not open")
   }
@@ -108,6 +131,10 @@ const resetPoints = async (name: string | null = null): Promise<void> => {
 
 const closeDatabase = async (): Promise<void> => {
   SQLITE?.close()
+
+  if (Bun.env.DEBUG) {
+    info("Database closed")
+  }
 }
 
-export { closeDatabase, getAll, openDatabase, resetPoints, updatePoints }
+export { closeDatabase, getAll, openDatabase, resetPoints, TEST_DB, TEST_SQLITE, updatePoints }

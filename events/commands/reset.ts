@@ -10,8 +10,9 @@ import {
   type User
 } from "discord.js"
 
+import { info } from "@postfmly/logger"
+
 import { resetPoints } from "../../utils/db.ts"
-import { error, info } from "../../utils/logger.ts"
 
 const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
   return new SlashCommandBuilder()
@@ -35,15 +36,10 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
     await resetPoints()
   }
 
-  await interaction
-    .reply({
-      content: `-# > ↩️ ${content}`,
-      flags: MessageFlags.Ephemeral
-    })
-    .catch((e: unknown): void => {
-      error(e)
-      throw e
-    })
+  await interaction.reply({
+    content: `-# > ↩️ ${content}`,
+    flags: MessageFlags.Ephemeral
+  })
 
   if (Bun.env.DEBUG) {
     info(content)

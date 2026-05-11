@@ -11,10 +11,10 @@ import {
   SlashCommandBuilder
 } from "discord.js"
 
+import { checkRate } from "@postfmly/checkrate"
+
 import { type IUser } from "../../db/schema.ts"
-import { checkRate } from "../../utils/checkRate.ts"
 import { getAll } from "../../utils/db.ts"
-import { error } from "../../utils/logger.ts"
 
 const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
   return new SlashCommandBuilder()
@@ -58,21 +58,16 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
     users.filter((user: IUser): boolean => user.points > 0)
   )
 
-  await interaction
-    .reply({
-      flags: users.length ? MessageFlags.SuppressNotifications : MessageFlags.Ephemeral,
-      embeds: [
-        new EmbedBuilder()
-          .setColor("#78866b")
-          .setTitle(`🏆  ${Bun.env.NAME} Leaderboard  🏆`)
-          .setFields(await getEmbed(users))
-          .toJSON()
-      ]
-    })
-    .catch((e: unknown): void => {
-      error(e)
-      throw e
-    })
+  await interaction.reply({
+    flags: users.length ? MessageFlags.SuppressNotifications : MessageFlags.Ephemeral,
+    embeds: [
+      new EmbedBuilder()
+        .setColor("#78866b")
+        .setTitle(`🏆  ${Bun.env.NAME} Leaderboard  🏆`)
+        .setFields(await getEmbed(users))
+        .toJSON()
+    ]
+  })
 }
 
 export { create, invoke }

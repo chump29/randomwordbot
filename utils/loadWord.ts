@@ -1,59 +1,58 @@
 import { type Channel, type Client, type Message, MessageFlags, type TextChannel } from "discord.js"
 
+import { info } from "@postfmly/logger"
+
+import pluralize from "pluralize"
 import { count, generate } from "random-words"
 
 import { updatePoints } from "./db.ts"
-import { info } from "./logger.ts"
 
 let CLIENT: Client | null = null
 
-let WORD: string = ""
+let WORD: string | null = null
 
+const MIN_DEFAULT: number = 3
+const MAX_DEFAULT: number = 0
+let MIN: number = 0
 let MAX: number = 0
-let MIN: number = 3
 
-let COUNT: string = ""
+let COUNT: number = 0
 
 let RUNNING: boolean = false
 
-interface IOptions {
-  maxLength?: number
-  minLength: number
-}
-
-const getOptions = (): IOptions => {
-  const options: IOptions = {
-    minLength: MIN
-  }
-  if (MAX) {
-    options.maxLength = MAX
-  }
-  return options
-}
-
-const loadSettings = (client: Client): void => {
+const loadSettings = async (client: Client): Promise<void> => {
   if (!client) {
     throw new Error("Invalid client")
   }
 
   CLIENT = client
 
-  MAX = isNaN(Number(Bun.env.MAX_LENGTH)) ? 0 : Number(Bun.env.MAX_LENGTH)
-  MIN = isNaN(Number(Bun.env.MIN_LENGTH)) ? MIN : Number(Bun.env.MIN_LENGTH)
+  MIN = isNaN(Number(Bun.env.MIN_LENGTH)) ? MIN_DEFAULT : Number(Bun.env.MIN_LENGTH)
+  MAX = isNaN(Number(Bun.env.MAX_LENGTH)) ? MAX_DEFAULT : Number(Bun.env.MAX_LENGTH)
 
-  COUNT = count(getOptions()).toLocaleString()
+  if (MAX < MIN) {
+    MAX = MIN
+  }
+
+  COUNT = count({
+    maxLength: MAX,
+    minLength: MIN
+  })
+
+  if (!COUNT) {
+    throw new Error("No words")
+  }
 
   if (Bun.env.DEBUG) {
-    info(`Loaded ${COUNT} words`)
+    info(`Loaded ${pluralize("word", COUNT, true)}`)
   }
 }
 
-const newWord = (): void => {
-  WORD = generate(getOptions()) as string
-
-  if (!WORD.length) {
-    throw new Error("Invalid word")
-  }
+const newWord = async (): Promise<void> => {
+  WORD = generate({
+    maxLength: MAX,
+    minLength: MIN
+  }) as string
 
   if (Bun.env.DEBUG) {
     info(`New word: ${WORD}`)
@@ -61,6 +60,10 @@ const newWord = (): void => {
 }
 
 const checkWord = async (message: Message): Promise<void> => {
+  if (!WORD) {
+    throw new Error("Invalid WORD")
+  }
+
   if (message.content.toLowerCase().includes(WORD)) {
     if (!CLIENT) {
       throw new Error("Invalid client")
@@ -91,12 +94,12 @@ const checkWord = async (message: Message): Promise<void> => {
           info(`${name} said ${WORD}`)
         }
       })
-      .then((): void => newWord())
+      .then(async (): Promise<void> => await newWord())
   }
 }
 
-const startWord = (): void => {
-  newWord()
+const startWord = async (): Promise<void> => {
+  await newWord()
   RUNNING = true
 
   if (Bun.env.DEBUG) {
@@ -104,9 +107,9 @@ const startWord = (): void => {
   }
 }
 
-const stopWord = (): void => {
+const stopWord = async (): Promise<void> => {
   RUNNING = false
-  WORD = ""
+  WORD = null
 
   if (Bun.env.DEBUG) {
     info("Stopped")

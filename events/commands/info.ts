@@ -11,9 +11,9 @@ import {
   SlashCommandBuilder
 } from "discord.js"
 
-import { checkRate } from "../../utils/checkRate.ts"
+import { checkRate } from "@postfmly/checkrate"
+
 import { COUNT } from "../../utils/loadWord.ts"
-import { error } from "../../utils/logger.ts"
 
 const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody => {
   return new SlashCommandBuilder()
@@ -29,32 +29,31 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
     return
   }
 
-  await interaction
-    .reply({
-      flags: MessageFlags.Ephemeral,
-      embeds: [
-        new EmbedBuilder()
-          .setColor("#78866b")
-          .setAuthor({
-            iconURL: Bun.env.LOGO_URL,
-            name: `${Bun.env.NAME} v${Bun.env.npm_package_version}`
-          })
-          .setThumbnail(Bun.env.LOGO_URL)
-          .setDescription("- Listens for random word")
-          .setFields({
-            inline: true,
-            name: "Total Words:",
-            value: COUNT
-          } as APIEmbedField)
-          .setFooter({
-            text: "By Chris Post"
-          })
-      ]
-    })
-    .catch((e: unknown): void => {
-      error(e)
-      throw e
-    })
+  if (!Bun.env.LOGO_URL) {
+    throw new Error("Invalid LOGO_URL")
+  }
+
+  await interaction.reply({
+    flags: MessageFlags.Ephemeral,
+    embeds: [
+      new EmbedBuilder()
+        .setColor("#78866b")
+        .setAuthor({
+          iconURL: Bun.env.LOGO_URL,
+          name: `${Bun.env.NAME} v${Bun.env.npm_package_version}`
+        })
+        .setThumbnail(Bun.env.LOGO_URL)
+        .setDescription("- Listens for random word")
+        .setFields({
+          inline: true,
+          name: "Total Words:",
+          value: COUNT.toLocaleString()
+        } as APIEmbedField)
+        .setFooter({
+          text: "By Chris Post"
+        })
+    ]
+  })
 }
 
 export { create, invoke }

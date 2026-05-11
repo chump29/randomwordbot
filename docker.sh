@@ -11,8 +11,3 @@ echo -e "${_build} ${_yellow}Building${_nc}:\n"
 echo -e "\n${_start} ${_yellow}Starting${_nc}:\n"
 docker container rm --force randomwordbot > /dev/null 2>&1
 docker container run --rm --name randomwordbot --publish 8003:8003 --env TZ=America/Chicago --detach randomwordbot
-
-unset _yellow
-unset _nc
-unset _build
-unset _start
