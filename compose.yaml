@@ -8,6 +8,10 @@ services:
     volumes:
       - db:/app/db
     environment:
+      - LOGO_NAME=randomwordbot.webp
+      - LOGO_PATH=./utils/images
+      - LOGO_PORT=8003
+      - LOGO_URL=https://randomwordbot.postfmly.us/randomwordbot.webp
       - TZ=America/Chicago
     env_file: .env
     labels:
