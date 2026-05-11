@@ -21,6 +21,13 @@ let COUNT: number = 0
 
 let RUNNING: boolean = false
 
+interface IOptions {
+  maxLength?: number
+  minLength?: number
+}
+
+const options: IOptions = {}
+
 const loadSettings = async (client: Client): Promise<void> => {
   if (!client) {
     throw new Error("Invalid client")
@@ -39,10 +46,12 @@ const loadSettings = async (client: Client): Promise<void> => {
     MAX = MIN
   }
 
-  COUNT = count({
-    maxLength: MAX,
-    minLength: MIN
-  })
+  options.minLength = MIN
+  if (MAX > 0) {
+    options.maxLength = MAX
+  }
+
+  COUNT = count(options)
 
   if (Bun.env.DEBUG) {
     info(`Loaded ${pluralize("word", COUNT, true)}`)
@@ -50,10 +59,7 @@ const loadSettings = async (client: Client): Promise<void> => {
 }
 
 const newWord = async (): Promise<void> => {
-  WORD = generate({
-    maxLength: MAX,
-    minLength: MIN
-  }) as string
+  WORD = generate(options) as string
 
   if (Bun.env.DEBUG) {
     info(`New word: ${WORD}`)
