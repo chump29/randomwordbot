@@ -11,7 +11,7 @@
 ![SQLite](https://img.shields.io/badge/SQLite-$_sqlite-informational?style=plastic&logo=sqlite)
 
 ![CodeQL](https://github.com/chump29/randomwordbot/workflows/CodeQL/badge.svg) &nbsp;
-![Coverage](https://img.shields.io/badge/Coverage-96.47%25-success?style=plastic&logo=jest)
+![Coverage](https://img.shields.io/badge/Coverage-96.04%25-success?style=plastic&logo=jest)
 
 ![License](https://img.shields.io/github/license/chump29/randomwordbot?style=plastic&color=blueviolet&label=License&logo=gplv3)
 
