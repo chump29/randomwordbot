@@ -42,12 +42,10 @@ const loadSettings = async (client: Client): Promise<void> => {
     MIN = MIN_POSSIBLE
   }
 
-  if (MAX < MIN) {
-    MAX = MIN
-  }
-
-  options.minLength = MIN
   if (MAX > 0) {
+    if (MAX < MIN) {
+      MAX = MIN
+    }
     options.maxLength = MAX
   }
 
