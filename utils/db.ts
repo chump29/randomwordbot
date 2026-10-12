@@ -102,6 +102,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
       })
   }
 
+  // * /reset <@name|all>
   async resetPoints(name?: string): Promise<void> {
     const query = this.dbCheck().update(points).set({ points: 0 })
 
@@ -112,6 +113,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
     await query
   }
 
+  // * /leaderboard
   async getLeaderboard(): Promise<IPoints[]> {
     return await this.dbCheck().select().from(points).where(gt(points.points, 0)).orderBy(desc(points.points)).limit(10)
   }

@@ -82,6 +82,7 @@ class RandomWordBot implements IRandomWordBot {
       })
   }
 
+  // * /word
   getNewWord(): void {
     const word: Nullable<string> = this.random ? (this.WORDS[this.random()] ?? null) : null
     if (!word) {

@@ -74,9 +74,9 @@
 
 ###### <sup>1</sup> #RRGGBB format <!-- markdownlint-disable-line MD001 -->
 
-###### <sup>2</sup> 0=disable (will default to *maximum* word length), or >= 2 *(must be >= `MIN_LENGTH`)*
+###### <sup>2</sup> 0=disable (will default to *maximum* word length = 14), or >= 2 *(must be >= `MIN_LENGTH`)*
 
-###### <sup>3</sup> 0=disable (will default to *minimum* word length), or >= 2
+###### <sup>3</sup> 0=disable (will default to *minimum* word length = 2), or >= 2
 
 ###### <sup>4</sup> Must be > 0
 
