@@ -15,7 +15,7 @@ import { env } from "./env.ts"
 type DBType = ReturnType<typeof drizzle>
 
 interface IRandomWordBotDatabase {
-  _db: Nullable<DBType>
+  readonly _db: Nullable<DBType>
   close: () => void
   getLeaderboard: () => Promise<IPoints[]>
   open: () => void

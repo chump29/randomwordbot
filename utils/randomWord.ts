@@ -22,11 +22,11 @@ interface IOptions {
 }
 
 interface IRandomWordBot {
-  COUNT: number
+  readonly COUNT: number
   checkForWord: (message: Message) => Promise<void>
   getNewWord: () => void
   init: (client: Client) => Promise<void>
-  WORD: string
+  readonly WORD: string
 }
 
 class RandomWordBot implements IRandomWordBot {
