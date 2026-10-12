@@ -19,7 +19,8 @@ FROM oven/bun:alpine
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
-  tzdata
+  tzdata \
+  sqlite
 
 WORKDIR /app
 
@@ -31,7 +32,7 @@ LABEL org.opencontainers.image.authors="Chris Post <admin@postfmly.com>" \
 
 ENV TZ=Etc/GMT
 
-COPY --from=build /app /app/
+COPY --from=build /app/node_modules ./node_modules
 COPY . .
 
 HEALTHCHECK --interval=60s CMD source healthcheck.sh
