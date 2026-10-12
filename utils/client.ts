@@ -33,13 +33,13 @@ class RandomWordClient implements IRandomWordClient {
 
     info("🔴 Shutting down...")
 
-    this.isShutdown = true
-
     await this.CLIENT.destroy()
 
     await this.LOGO_SERVER.stop()
 
     DB.close()
+
+    this.isShutdown = true
 
     process.exit(0)
   }
