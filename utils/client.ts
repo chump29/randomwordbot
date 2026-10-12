@@ -45,10 +45,6 @@ class RandomWordClient implements IRandomWordClient {
   }
 
   private async login(): Promise<void> {
-    if (!this.CLIENT) {
-      throw new Error("Invalid CLIENT")
-    }
-
     await this.CLIENT.login(env.TOKEN)
 
     if (this.CLIENT.user && env.DEBUG) {

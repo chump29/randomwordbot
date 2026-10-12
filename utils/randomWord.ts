@@ -1,5 +1,5 @@
 import { info } from "@postfmly/logger"
-import { type Nullable } from "@postfmly/types"
+import { type Nullable, type Optional } from "@postfmly/types"
 
 import { default as pluralize } from "@jarrodek/pluralize"
 import { type Channel, type Client, type Message, MessageFlags, type TextChannel } from "discord.js"
@@ -26,7 +26,7 @@ interface IRandomWordBot {
   checkForWord: (message: Message) => Promise<void>
   getNewWord: () => void
   init: (client: Client) => Promise<void>
-  WORD: Nullable<string>
+  WORD: string
 }
 
 class RandomWordBot implements IRandomWordBot {
@@ -84,7 +84,7 @@ class RandomWordBot implements IRandomWordBot {
 
   // * /word
   getNewWord(): void {
-    const word: Nullable<string> = this.random ? (this.WORDS[this.random()] ?? null) : null
+    const word: Optional<string> = this.WORDS[this.random()]
     if (!word) {
       throw new Error("Could not get word")
     }
