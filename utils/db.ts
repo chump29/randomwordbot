@@ -1,140 +1,122 @@
-import { mkdir } from "node:fs/promises"
+import { join } from "node:path"
 
-import { Database, SQLiteError } from "bun:sqlite"
+import { Database } from "bun:sqlite"
 
 import { info } from "@postfmly/logger"
+import { type Nullable } from "@postfmly/types"
 
-import { desc, eq, sql } from "drizzle-orm"
-import { drizzle, type SQLiteBunDatabase } from "drizzle-orm/bun-sqlite"
+import { desc, eq, gt, sql } from "drizzle-orm"
+import { drizzle } from "drizzle-orm/bun-sqlite"
+import { migrate } from "drizzle-orm/bun-sqlite/migrator"
 
-import { type IUser, users } from "../db/schema.ts"
+import { type IPoints, points } from "../db/schema.ts"
+import { env } from "./env.ts"
 
-let SQLITE: Database | null = null
-let TEST_SQLITE: Database | null = null
-let DB: SQLiteBunDatabase | null = null
-const TEST_DB: SQLiteBunDatabase | null = null
+type DBType = ReturnType<typeof drizzle>
 
-Bun.env.DB_NAME = Bun.env.DB_NAME || "wordjumblebot.db"
-Bun.env.DB_PATH = Bun.env.DB_PATH || "./db/"
+interface IRandomWordBotDatabase {
+  _db: Nullable<DBType>
+  close: () => void
+  getLeaderboard: () => Promise<IPoints[]>
+  open: () => void
+  resetPoints: (name?: string) => Promise<void>
+  updatePoints: (name: string) => Promise<void>
+}
 
-const openDatabase = async (): Promise<void> => {
-  await mkdir(Bun.env.DB_PATH, {
-    recursive: true
-  })
+class RandomWordBotDatabase implements IRandomWordBotDatabase {
+  private client: Nullable<Database> = null
+  _db: Nullable<DBType> = null
 
-  const DB_STR: string = `${Bun.env.DB_PATH}${Bun.env.DB_NAME}`
+  open(): void {
+    if (this._db) {
+      if (env.DEBUG) {
+        info("⚠️  Database already open")
+      }
 
-  SQLITE = new Database(DB_STR, {
-    create: true,
-    strict: true
-  })
+      return
+    }
 
-  if (Bun.env.NODE_ENV === "test") {
-    TEST_SQLITE = SQLITE
-  }
+    const dbPathName: string = join(env.DB_PATH, env.DB_NAME)
 
-  DB =
-    TEST_DB ??
-    drizzle({
-      client: SQLITE,
+    this.client = new Database(dbPathName, {
+      create: true,
+      strict: true
+    })
+
+    this.client.run(`
+      PRAGMA busy_timeout = 3000;
+      PRAGMA foreign_keys = 0;
+      PRAGMA journal_mode = WAL;
+      PRAGMA synchronous = NORMAL;
+      PRAGMA wal_checkpoint(TRUNCATE);
+    `)
+
+    this._db = drizzle({
+      client: this.client,
       jit: true
     })
 
-  DB.run(
-    sql.raw(`
-      PRAGMA journal_mode = WAL;
-      PRAGMA wal_checkpoint(TRUNCATE);`)
-  )
+    migrate(this._db, {
+      migrationsFolder: env.DB_PATH
+    })
 
-  try {
-    await DB.select().from(users)
-  } catch (e: unknown) {
-    if (e instanceof SQLiteError && e.message.includes("no such table")) {
-      if (Bun.env.DEBUG) {
-        info("Creating tables...")
-      }
-
-      DB.run(
-        sql.raw(`
-          CREATE TABLE users(
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL UNIQUE,
-            points INTEGER NOT NULL);`)
-      )
-    } else {
-      throw e
+    if (env.DEBUG) {
+      info(`▶️  Using database: ${dbPathName}`)
     }
   }
 
-  if (Bun.env.DEBUG) {
-    info(`Using database: ${DB_STR}`)
-  }
-}
-
-const getPoints = async (name: string): Promise<number> => {
-  if (!DB) {
-    throw new Error("Database not open")
-  }
-
-  const [user]: IUser[] = await DB.select().from(users).where(eq(users.name, name)).limit(1)
-  if (!user) {
-    return 0
-  }
-
-  return user.points
-}
-
-const updatePoints = async (name: string): Promise<void> => {
-  if (!name.length) {
-    throw new Error("Invalid name")
-  }
-
-  if (!DB) {
-    throw new Error("Database not open")
-  }
-
-  await DB.insert(users)
-    .values({
-      name: name,
-      points: 1
-    })
-    .onConflictDoUpdate({
-      target: users.name,
-      set: {
-        points: (await getPoints(name)) + (isNaN(Number(Bun.env.POINTS)) ? 1 : Number(Bun.env.POINTS))
+  close(): void {
+    if (!this._db) {
+      if (env.DEBUG) {
+        info("⚠️  Database already closed")
       }
-    })
-}
 
-const getAll = async (): Promise<IUser[]> => {
-  if (!DB) {
-    throw new Error("Database not open")
+      return
+    }
+
+    this.client?.close()
+    this.client = null
+
+    this._db = null
+
+    if (env.DEBUG) {
+      info("⏹️  Database closed")
+    }
   }
 
-  return await DB.select().from(users).orderBy(desc(users.points))
-}
+  private dbCheck(): DBType {
+    if (!this._db) {
+      throw new Error("Database not open")
+    }
 
-const resetPoints = async (name: string | null = null): Promise<void> => {
-  if (!DB) {
-    throw new Error("Database not open")
+    return this._db
   }
 
-  const tx = DB.update(users).set({
-    points: 0
-  })
-  if (name) {
-    tx.where(eq(users.name, name)).run()
-  } else {
-    tx.run()
+  async updatePoints(name: string): Promise<void> {
+    await this.dbCheck()
+      .insert(points)
+      .values({ name, points: env.POINTS })
+      .onConflictDoUpdate({
+        set: { points: sql`${points.points} + ${env.POINTS}` },
+        target: points.name
+      })
+  }
+
+  async resetPoints(name?: string): Promise<void> {
+    const query = this.dbCheck().update(points).set({ points: 0 })
+
+    if (name) {
+      query.where(eq(points.name, name))
+    }
+
+    await query
+  }
+
+  async getLeaderboard(): Promise<IPoints[]> {
+    return await this.dbCheck().select().from(points).where(gt(points.points, 0)).orderBy(desc(points.points)).limit(10)
   }
 }
 
-const closeDatabase = async (): Promise<void> => {
-  SQLITE?.close()
+const DB: IRandomWordBotDatabase = new RandomWordBotDatabase()
 
-  if (Bun.env.DEBUG) {
-    info("Database closed")
-  }
-}
-
-export { closeDatabase, getAll, openDatabase, resetPoints, TEST_DB, TEST_SQLITE, updatePoints }
+export { DB }

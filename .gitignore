@@ -1,5 +1,5 @@
 .env.local
-.vscode/
+.vscode
 coverage/
 db/randomwordbot*
 node_modules/

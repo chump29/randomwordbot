@@ -1,0 +1,19 @@
+diff --git a/index.d.ts b/index.d.ts
+index d3a6906220c0334216ebd80b4b61967c92222f2d..194602ca335499f11536d02be0495e3a0458b69c 100644
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -16,7 +16,7 @@ declare function generate(count?: number): string | string[];
+ declare function generate(options: GenerateOptions): string | string[];
+ declare function generate(options: JoinedWordsOptions): string;
+ 
+-declare const wordsList: string[];
++declare const wordList: string[];
+ 
+ declare type CountOptions = {
+   minLength?: number;
+@@ -25,4 +25,4 @@ declare type CountOptions = {
+ 
+ declare function count(options?: CountOptions): number;
+ 
+-export { generate, count, wordsList };
++export { generate, count, wordList };

@@ -1,12 +1,11 @@
-import { type InferSelectModel } from "drizzle-orm"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
-const users = sqliteTable("users", {
+const points = sqliteTable("points", {
   id: integer().primaryKey(),
   name: text().notNull().unique(),
   points: integer().notNull()
 })
 
-type IUser = InferSelectModel<typeof users>
+type IPoints = Omit<typeof points.$inferInsert, "id">
 
-export { type IUser, users }
+export { type IPoints, points }

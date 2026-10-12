@@ -5,11 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "8003:8003"
-    volumes:
-      - db:/app/db
     environment:
-      - LOGO_NAME=randomwordbot.webp
-      - LOGO_PATH=./utils/images
       - LOGO_PORT=8003
       - LOGO_URL=https://randomwordbot.postfmly.us/randomwordbot.webp
       - TZ=America/Chicago
@@ -19,8 +15,5 @@ services:
       - homepage.group=Personal
       - homepage.name=RandomWordBot
       - homepage.icon=https://randomwordbot.postfmly.com/randomwordbot.webp
-
-volumes:
-  db:
 
 networks: {}
