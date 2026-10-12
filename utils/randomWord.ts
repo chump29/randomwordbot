@@ -30,15 +30,15 @@ interface IRandomWordBot {
 }
 
 class RandomWordBot implements IRandomWordBot {
-  private CHANNEL: Nullable<Channel> = null
+  private CHANNEL!: TextChannel
 
   private OPTIONS: IOptions = {} as IOptions
 
   private WORDS: string[] = []
 
-  private random: Nullable<ReturnType<typeof exhaustiveUniqueRandom>> = null
+  private random!: ReturnType<typeof exhaustiveUniqueRandom>
 
-  WORD: string = "𑄝੭" // * NOTE: only used for init
+  WORD!: string
 
   get COUNT(): number {
     return this.WORDS.length
@@ -97,10 +97,12 @@ class RandomWordBot implements IRandomWordBot {
   }
 
   async init(client: Client): Promise<void> {
-    this.CHANNEL = await client.channels.fetch(env.CHANNEL_ID)
-    if (!this.CHANNEL) {
+    const channel: Nullable<Channel> = await client.channels.fetch(env.CHANNEL_ID)
+    if (!channel) {
       throw new Error("Could not get channel")
     }
+
+    this.CHANNEL = channel as TextChannel
 
     this.OPTIONS = RandomWordBot.getOptions()
 
@@ -130,7 +132,7 @@ class RandomWordBot implements IRandomWordBot {
 
       const name: string = message.member.user.displayName
 
-      await (this.CHANNEL as TextChannel).send({
+      await this.CHANNEL.send({
         content: `-# > \`${name}\` said \`${this.WORD}\`\n-# > Awarding \`${points}\``,
         flags: MessageFlags.SuppressNotifications
       })

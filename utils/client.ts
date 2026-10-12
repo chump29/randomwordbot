@@ -2,7 +2,6 @@ import { default as process } from "node:process"
 
 import { error, info } from "@postfmly/logger"
 import { type ILogoServerConfig, LogoServer } from "@postfmly/logoserver"
-import { type Nullable } from "@postfmly/types"
 
 import { ActivityType, Client as DiscordClient, Events, GatewayIntentBits, type Message } from "discord.js"
 
@@ -17,11 +16,11 @@ interface IRandomWordClient {
 }
 
 class RandomWordClient implements IRandomWordClient {
-  private CLIENT: Nullable<DiscordClient> = null
+  private CLIENT!: DiscordClient
 
-  private LOGO_SERVER: Nullable<LogoServer> = null
+  private LOGO_SERVER!: LogoServer
 
-  private isShutdown: boolean = false
+  private isShutdown: boolean = true
 
   async shutdown(event?: string): Promise<void> {
     if (this.isShutdown) {
@@ -36,9 +35,9 @@ class RandomWordClient implements IRandomWordClient {
 
     this.isShutdown = true
 
-    await this.CLIENT?.destroy()
+    await this.CLIENT.destroy()
 
-    await this.LOGO_SERVER?.stop()
+    await this.LOGO_SERVER.stop()
 
     DB.close()
 
@@ -103,6 +102,8 @@ class RandomWordClient implements IRandomWordClient {
     await loadCommands(this.CLIENT)
 
     await this.login()
+
+    this.isShutdown = false
 
     return this.CLIENT
   }
