@@ -89,7 +89,7 @@ class RandomWordBot implements IRandomWordBot {
       throw new Error("Could not get word")
     }
 
-    this.WORD = word
+    this.WORD = word.toLowerCase()
 
     if (env.DEBUG) {
       info(`💬 New word: ${this.WORD}`)
@@ -123,11 +123,11 @@ class RandomWordBot implements IRandomWordBot {
   }
 
   async checkForWord(message: Message): Promise<void> {
-    if (createRegExp(exactly(this.WORD), [caseInsensitive]).test(message.content)) {
-      if (!message.member || message.member.user.bot) {
-        return
-      }
+    if (!message.member || message.member.user.bot) {
+      return
+    }
 
+    if (createRegExp(exactly(this.WORD), [caseInsensitive]).test(message.content)) {
       const points: string = pluralize("point", env.POINTS, true)
 
       const name: string = message.member.user.displayName
