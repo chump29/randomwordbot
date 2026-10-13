@@ -40,6 +40,10 @@ class RandomWordBot implements IRandomWordBot {
 
   WORD!: string
 
+  private get REGEXP(): RegExp {
+    return createRegExp(exactly(this.WORD), [caseInsensitive])
+  }
+
   get COUNT(): number {
     return this.WORDS.length
   }
@@ -127,7 +131,7 @@ class RandomWordBot implements IRandomWordBot {
       return
     }
 
-    if (createRegExp(exactly(this.WORD), [caseInsensitive]).test(message.content)) {
+    if (this.REGEXP.test(message.content)) {
       const points: string = pluralize("point", env.POINTS, true)
 
       const name: string = message.member.user.displayName
