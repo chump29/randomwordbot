@@ -8,7 +8,7 @@ import { type Channel, type ChannelManager, type Client, type GuildMember, type 
 import { env } from "../../utils/env.ts"
 import { RandomWord } from "../../utils/randomWord.ts"
 
-const mockUpdatePoints: jest.Mock = jest.fn().mockResolvedValue(undefined)
+const mockUpdatePoints: jest.Mock = jest.fn()
 
 mock.module("../../utils/db.ts", (): unknown => ({
   DB: {
@@ -16,7 +16,7 @@ mock.module("../../utils/db.ts", (): unknown => ({
   }
 }))
 
-const mockSend: jest.Mock = jest.fn().mockResolvedValue(undefined)
+const mockSend: jest.Mock = jest.fn()
 
 const client: Client = {
   channels: {
