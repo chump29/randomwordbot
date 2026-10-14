@@ -40,9 +40,7 @@ class RandomWordBot implements IRandomWordBot {
 
   WORD!: string
 
-  private get REGEXP(): RegExp {
-    return createRegExp(exactly(this.WORD), [caseInsensitive])
-  }
+  private REGEXP!: RegExp
 
   get COUNT(): number {
     return this.WORDS.length
@@ -94,6 +92,8 @@ class RandomWordBot implements IRandomWordBot {
     }
 
     this.WORD = word.toLowerCase()
+
+    this.REGEXP = createRegExp(exactly(word), [caseInsensitive])
 
     if (env.DEBUG) {
       info(`💬 New word: ${this.WORD}`)
