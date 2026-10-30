@@ -21,16 +21,14 @@ spyOn(console, "info").mockImplementation((): void => undefined)
 
 const mockSend: jest.Mock = jest.fn()
 
-const mockChannel = createMock<Channel>({
-  send: mockSend,
-  type: ChannelType.GuildText
-})
-
 beforeAll(async (): Promise<void> => {
   await RandomWord.init(
     createMock<Client>({
       channels: {
-        fetch: mockChannel
+        fetch: createMock<Channel>({
+          send: mockSend,
+          type: ChannelType.GuildText
+        })
       }
     })
   )
@@ -47,11 +45,7 @@ describe("randomWord", (): void => {
 
     expect(word).not.toBeNull()
 
-    // * NOTE: gets around If
-    const merge = <M extends object, C extends object>(m: M, c: C): M & { channel: C } =>
-      Object.assign(m, { channel: c })
-
-    const message: Message = createMock<Message>({
+    const mockMessage: Message = createMock<Message>({
       content: fake.helpers.fake(`{{lorem.word}} ${RandomWord.WORD} {{lorem.word}}`),
       member: createMock<GuildMember>({
         user: createMock<User>({
@@ -61,9 +55,7 @@ describe("randomWord", (): void => {
       })
     })
 
-    const msg = merge(message, mockChannel)
-
-    await RandomWord.checkForWord(msg)
+    await RandomWord.checkForWord(mockMessage)
 
     expect(mockSend).toHaveBeenCalledTimes(1)
 
@@ -83,7 +75,7 @@ describe("randomWord", (): void => {
     expect(payload.content).toContain(env.POINTS.toString())
 
     // biome-ignore lint/style/noNonNullAssertion: exists
-    expect(mockUpdatePoints).toHaveBeenCalledWith(msg.member!.user.displayName)
+    expect(mockUpdatePoints).toHaveBeenCalledWith(mockMessage.member!.user.displayName)
 
     expect(word).not.toBe(RandomWord.WORD)
   })

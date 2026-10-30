@@ -59,7 +59,7 @@ beforeAll(async (): Promise<void> => {
 
   await DB.db.insert(points).values(users)
 
-  const mockChannel = createMock<Channel>({ type: ChannelType.GuildText })
+  const mockChannel: Channel = createMock<Channel>({ type: ChannelType.GuildText })
 
   await RandomWord.init(
     createMock<Client>({
@@ -93,7 +93,7 @@ await Promise.all(
         const mockDeferReply: jest.Mock = jest.fn()
         const mockEditReply: jest.Mock = jest.fn()
 
-        const interaction = createMock<ChatInputCommandInteraction>({
+        const mockInteraction: ChatInputCommandInteraction = createMock<ChatInputCommandInteraction>({
           createdTimestamp: fake.date.past().getTime(),
           deferReply: mockDeferReply,
           editReply: mockEditReply,
@@ -106,7 +106,7 @@ await Promise.all(
           }
         })
 
-        expect(await invoke(interaction)).toBeUndefined()
+        expect(await invoke(mockInteraction)).toBeUndefined()
 
         expect(mockDeferReply).toHaveBeenCalledTimes(1)
         expect(mockEditReply).toHaveBeenCalledTimes(1)
@@ -119,14 +119,14 @@ await Promise.all(
 
         const isEmbed = (e: unknown): e is APIEmbed => typeof e === "object" && e !== null && !Array.isArray(e)
 
-        let embed: APIEmbed = {}
+        let data: APIEmbed
         if ("embeds" in payload && Array.isArray(payload.embeds)) {
           const [firstEmbed] = payload.embeds
           if (!isEmbed(firstEmbed)) {
             throw new Error("Embed not found")
           }
 
-          embed = firstEmbed
+          ;({ data } = EmbedBuilder.from(firstEmbed))
         }
 
         let content: string = ""
@@ -136,8 +136,6 @@ await Promise.all(
 
         match<string, void>(name)
           .with("info", (): void => {
-            const { data }: { data: APIEmbed } = EmbedBuilder.from(embed)
-
             expect(decimalToHex(data.color)).toBe(env.COLOR)
             expect(data.author?.icon_url).toBe(env.LOGO_URL)
             expect(data.author?.name).toBe(`${env.NAME} v${version}`)
@@ -146,8 +144,6 @@ await Promise.all(
             expect(data.footer?.text).toEndWith(author.name)
           })
           .with("leaderboard", (): void => {
-            const { data }: { data: APIEmbed } = EmbedBuilder.from(embed)
-
             expect(decimalToHex(data.color)).toBe(env.COLOR)
             expect(data.title).not.toBeEmpty()
             expect(data.fields).not.toBeUndefined()

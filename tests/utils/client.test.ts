@@ -1,31 +1,27 @@
 import { default as process } from "node:process"
 
-import { beforeAll, describe, expect, jest, spyOn, test } from "bun:test"
+import { beforeAll, describe, expect, type jest, spyOn, test } from "bun:test"
 
 import { simpleFaker as fake } from "@faker-js/faker"
-import { type Channel, ChannelType, type ClientUser, type Client as DiscordClient } from "discord.js"
+import { type ClientUser, type Client as DiscordClient } from "discord.js"
 
 import { Client } from "../../utils/client.ts"
 import { env } from "../../utils/env.ts"
 
 // * NOTE: suppress console output
-const infoSpy = spyOn(console, "info").mockImplementation((): void => undefined)
+const infoSpy: jest.Mock = spyOn(console, "info").mockImplementation((): void => undefined)
 // biome-ignore lint/nursery/noUnsafeTypeAssertion: suppress output
-const exitSpy = spyOn(process, "exit").mockImplementation((): never => undefined as never)
+const exitSpy: jest.Mock = spyOn(process, "exit").mockImplementation((): never => undefined as never)
 
 const tag: string = `${env.NAME}#${fake.string.numeric({ allowLeadingZeros: false, length: 4 })}`
 
 beforeAll(async (): Promise<void> => {
   await Client.init(
     createMock<DiscordClient>({
-      user: createMock<ClientUser>({ displayName: env.NAME, tag }),
-      channels: {
-        fetch: jest.fn().mockResolvedValue(
-          createMock<Channel>({
-            type: ChannelType.GuildText
-          })
-        )
-      }
+      user: createMock<ClientUser>({
+        displayName: env.NAME,
+        tag
+      })
     })
   )
 })
