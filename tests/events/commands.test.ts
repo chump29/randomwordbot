@@ -10,7 +10,7 @@ import { fakerEN_US as fake } from "@faker-js/faker"
 import {
   type APIEmbed,
   type Channel,
-  type ChannelManager,
+  ChannelType,
   type ChatInputCommandInteraction,
   type Client,
   EmbedBuilder,
@@ -38,14 +38,15 @@ const dir: string = "events/commands"
 
 const commands: string[] = (await readdir(dir)).filter((file: string): boolean => file.endsWith(".ts"))
 
-beforeAll(async (): Promise<void> => {
-  spyOn(console, "info").mockImplementation((): void => undefined) // suppress
+// * NOTE: suppress console output
+spyOn(console, "info").mockImplementation((): void => undefined)
 
+beforeAll(async (): Promise<void> => {
   DB.open()
 
-  assert(DB._db)
+  assert(DB.db)
 
-  await DB._db.delete(points)
+  await DB.db.delete(points)
 
   const users: IPoints[] = Array.from(
     { length: 2 },
@@ -56,15 +57,17 @@ beforeAll(async (): Promise<void> => {
       }) satisfies IPoints
   )
 
-  await DB._db.insert(points).values(users)
+  await DB.db.insert(points).values(users)
 
-  await RandomWord.init({
-    channels: {
-      fetch: jest.fn().mockResolvedValue({
-        send: jest.fn()
-      } as unknown as Channel)
-    } as unknown as ChannelManager
-  } as Client)
+  const mockChannel = createMock<Channel>({ type: ChannelType.GuildText })
+
+  await RandomWord.init(
+    createMock<Client>({
+      channels: {
+        fetch: mockChannel
+      }
+    })
+  )
 })
 
 afterAll((): void => {
@@ -87,34 +90,53 @@ await Promise.all(
       })
 
       test("invoke", async (): Promise<void> => {
-        const interaction: ChatInputCommandInteraction = {
+        const mockDeferReply: jest.Mock = jest.fn()
+        const mockEditReply: jest.Mock = jest.fn()
+
+        const interaction = createMock<ChatInputCommandInteraction>({
           createdTimestamp: fake.date.past().getTime(),
-          deferReply: jest.fn(),
-          editReply: jest.fn(),
-          user: {
+          deferReply: mockDeferReply,
+          editReply: mockEditReply,
+          user: createMock<User>({
             displayName: fake.internet.displayName(),
             username: fake.internet.username()
-          } as User,
+          }),
           options: {
             getString: jest.fn().mockReturnValue("all")
           }
-        } as unknown as ChatInputCommandInteraction
+        })
 
         expect(await invoke(interaction)).toBeUndefined()
 
-        expect(interaction.deferReply).toHaveBeenCalledTimes(1)
-        expect(interaction.editReply).toHaveBeenCalledTimes(1)
+        expect(mockDeferReply).toHaveBeenCalledTimes(1)
+        expect(mockEditReply).toHaveBeenCalledTimes(1)
 
-        const mockEditReply = interaction.editReply as ReturnType<typeof jest.fn>
-        const firstCallArgs = mockEditReply.mock.calls
-        const payload = firstCallArgs[0]?.[0]
-        if (!payload) {
+        const { calls } = mockEditReply.mock
+        const payload: unknown = calls[0]?.[0]
+        if (!payload || typeof payload !== "object") {
           throw new Error("Payload not found")
+        }
+
+        const isEmbed = (e: unknown): e is APIEmbed => typeof e === "object" && e !== null && !Array.isArray(e)
+
+        let embed: APIEmbed = {}
+        if ("embeds" in payload && Array.isArray(payload.embeds)) {
+          const [firstEmbed] = payload.embeds
+          if (!isEmbed(firstEmbed)) {
+            throw new Error("Embed not found")
+          }
+
+          embed = firstEmbed
+        }
+
+        let content: string = ""
+        if ("content" in payload && typeof payload.content === "string") {
+          ;({ content } = payload)
         }
 
         match<string, void>(name)
           .with("info", (): void => {
-            const { data }: { data: APIEmbed } = EmbedBuilder.from(payload.embeds?.[0])
+            const { data }: { data: APIEmbed } = EmbedBuilder.from(embed)
 
             expect(decimalToHex(data.color)).toBe(env.COLOR)
             expect(data.author?.icon_url).toBe(env.LOGO_URL)
@@ -124,17 +146,17 @@ await Promise.all(
             expect(data.footer?.text).toEndWith(author.name)
           })
           .with("leaderboard", (): void => {
-            const { data }: { data: APIEmbed } = EmbedBuilder.from(payload.embeds?.[0])
+            const { data }: { data: APIEmbed } = EmbedBuilder.from(embed)
 
             expect(decimalToHex(data.color)).toBe(env.COLOR)
             expect(data.title).not.toBeEmpty()
             expect(data.fields).not.toBeUndefined()
             expect(data.fields).not.toBeEmpty()
           })
-          .with("ping", (): void => expect(payload.content).toInclude("Pong"))
-          .with("reset", (): void => expect(payload.content).toInclude("Reset"))
-          .with("status", (): void => expect(payload.content).toInclude("Listening"))
-          .with("word", (): void => expect(payload.content).toInclude("New"))
+          .with("ping", (): void => expect(content).toInclude("Pong"))
+          .with("reset", (): void => expect(content).toInclude("Reset"))
+          .with("status", (): void => expect(content).toInclude("Listening"))
+          .with("word", (): void => expect(content).toInclude("New"))
           .otherwise((): never => {
             throw new Error(`Payload tests not found for /${name}`)
           })

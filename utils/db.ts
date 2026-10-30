@@ -15,8 +15,8 @@ import { env } from "./env.ts"
 type DBType = ReturnType<typeof drizzle>
 
 interface IRandomWordBotDatabase {
-  readonly _db: Nullable<DBType>
   close: () => void
+  readonly db: Nullable<DBType>
   getLeaderboard: () => Promise<IPoints[]>
   open: () => void
   resetPoints: (name?: string) => Promise<void>
@@ -25,10 +25,10 @@ interface IRandomWordBotDatabase {
 
 class RandomWordBotDatabase implements IRandomWordBotDatabase {
   private client: Nullable<Database> = null
-  _db: Nullable<DBType> = null
+  db: Nullable<DBType> = null
 
   open(): void {
-    if (this._db) {
+    if (this.db) {
       if (env.DEBUG) {
         info("⚠️  Database already open")
       }
@@ -51,12 +51,12 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
       PRAGMA wal_checkpoint(TRUNCATE);
     `)
 
-    this._db = drizzle({
+    this.db = drizzle({
       client: this.client,
       jit: true
     })
 
-    migrate(this._db, {
+    migrate(this.db, {
       migrationsFolder: env.DB_PATH
     })
 
@@ -66,7 +66,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
   }
 
   close(): void {
-    if (!this._db) {
+    if (!this.db) {
       if (env.DEBUG) {
         info("⚠️  Database already closed")
       }
@@ -77,7 +77,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
     this.client?.close()
     this.client = null
 
-    this._db = null
+    this.db = null
 
     if (env.DEBUG) {
       info("⏹️  Database closed")
@@ -85,11 +85,11 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
   }
 
   private dbCheck(): DBType {
-    if (!this._db) {
+    if (!this.db) {
       throw new Error("Database not open")
     }
 
-    return this._db
+    return this.db
   }
 
   async updatePoints(name: string): Promise<void> {

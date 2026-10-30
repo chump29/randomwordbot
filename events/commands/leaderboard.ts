@@ -4,7 +4,6 @@ import {
   type APIEmbedField,
   type ChatInputCommandInteraction,
   EmbedBuilder,
-  type HexColorString,
   InteractionContextType,
   MessageFlags,
   type RESTPostAPIChatInputApplicationCommandsJSONBody,
@@ -58,13 +57,13 @@ const getEmbed = (points: IPoints[]): APIEmbedField[] => {
           name: "Points",
           value: allPoints
         }
-      ] as APIEmbedField[])
+      ] satisfies APIEmbedField[])
     )
   } else {
     fields.push({
       name: "🚫  Nothing to show",
       value: ""
-    } as APIEmbedField)
+    } satisfies APIEmbedField)
   }
 
   return fields
@@ -82,7 +81,7 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
   await interaction.editReply({
     embeds: [
       new EmbedBuilder()
-        .setColor(env.COLOR as HexColorString)
+        .setColor(env.COLOR)
         .setTitle(`🏆  ${env.NAME} Top 10 Leaderboard  🏆`)
         .setFields(getEmbed(await DB.getLeaderboard()))
         .toJSON()

@@ -1,4 +1,4 @@
-# ![RandomWordBot](./utils/images/randomwordbot.webp) RandomWordBot
+# ![RandomWordBot](./utils/images/randomwordbot.webp "RandomWordBot") RandomWordBot
 
 > - RandomWordBot for Discord
 
@@ -35,7 +35,7 @@
 #### Role Permissions:
 
 |   ⚙️ Permission    |
-|:------------------:|
+| :----------------: |
 |    ViewChannel     |
 |    SendMessages    |
 |     EmbedLinks     |
@@ -44,7 +44,7 @@
 #### Commands:
 
 |      📋 Task      |      🔧 Command       | ⚙️ Permission |
-|:-----------------:|:---------------------:|:-------------:|
+| :---------------: | :-------------------: | :-----------: |
 |       Info        |        `/info`        |     None      |
 | Show Leaderboard  |    `/leaderboard`     |     None      |
 |       Ping        |        `/ping`        |     None      |
@@ -59,7 +59,7 @@
 #### Environment Variables:
 
 |     📝 Description      | 📌 Variable |   {...} Value    |
-|:-----------------------:|:-----------:|:----------------:|
+| :---------------------: | :---------: | :--------------: |
 |        Activity         |  ACTIVITY   |    Listening     |
 |       Channel ID        | CHANNEL_ID  |      \<id>       |
 | Embed Color<sup>1</sup> |    COLOR    |     #78866b      |
@@ -74,16 +74,16 @@
 
 ###### <sup>1</sup> #RRGGBB format <!-- markdownlint-disable-line MD001 -->
 
-###### <sup>2</sup> 0=disable (will default to *maximum* word length = 14), or >= 2 *(must be >= `MIN_LENGTH`)*
+###### <sup>2</sup> 0=disable (will default to _maximum_ word length = 14), or >= 2 _(must be >= `MIN_LENGTH`)_
 
-###### <sup>3</sup> 0=disable (will default to *minimum* word length = 2), or >= 2
+###### <sup>3</sup> 0=disable (will default to _minimum_ word length = 2), or >= 2
 
 ###### <sup>4</sup> Must be > 0
 
 ##### From `@postfmly/logoserver`:
 
 | 📝 Description | 📌 Variable |    {...} Value     |
-|:--------------:|:-----------:|:------------------:|
+| :------------: | :---------: | :----------------: |
 |   Logo Name    |  LOGO_NAME  | randomwordbot.webp |
 |   Local Path   |  LOGO_PATH  |   ./utils/images   |
 |      Port      |  LOGO_PORT  | **Random**/[port]  |
@@ -91,12 +91,12 @@
 
 ##### From `@postfmly/checkrate`:
 
-###### *NOTE: Rate limited to 1 request per 1 second*
+###### _NOTE: Rate limited to 1 request per 1 second_
 
 #### Deployment:
 
 |  📜 Script  |  🔧 Command   |
-|:-----------:|:-------------:|
+| :---------: | :-----------: |
 |    Full     | `./build.sh`  |
 | Docker Only | `./docker.sh` |
 

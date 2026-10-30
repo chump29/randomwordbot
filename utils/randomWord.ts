@@ -2,7 +2,7 @@ import { info } from "@postfmly/logger"
 import { type Nullable, type Optional } from "@postfmly/types"
 
 import { default as pluralize } from "@jarrodek/pluralize"
-import { type Channel, type Client, type Message, MessageFlags, type TextChannel } from "discord.js"
+import { type Channel, ChannelType, type Client, type Message, MessageFlags, type TextChannel } from "discord.js"
 import { caseInsensitive, createRegExp, exactly } from "magic-regexp"
 import { wordList } from "random-words"
 import { match, P } from "ts-pattern"
@@ -32,7 +32,7 @@ interface IRandomWordBot {
 class RandomWordBot implements IRandomWordBot {
   private CHANNEL!: TextChannel
 
-  private OPTIONS: IOptions = {} as IOptions
+  private OPTIONS!: IOptions
 
   private WORDS: string[] = []
 
@@ -100,13 +100,16 @@ class RandomWordBot implements IRandomWordBot {
     }
   }
 
+  private static readonly isTextChannel = (channel: unknown): channel is TextChannel =>
+    channel !== null && typeof channel === "object"
+
   async init(client: Client): Promise<void> {
     const channel: Nullable<Channel> = await client.channels.fetch(env.CHANNEL_ID)
-    if (!channel) {
+    if (!RandomWordBot.isTextChannel(channel) || channel.type !== ChannelType.GuildText) {
       throw new Error("Could not get channel")
     }
 
-    this.CHANNEL = channel as TextChannel
+    this.CHANNEL = channel
 
     this.OPTIONS = RandomWordBot.getOptions()
 

@@ -32,7 +32,8 @@ const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody =>
 const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> => {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
-  const option: string = (interaction.options.getString("option") as string).trim()
+  // biome-ignore lint/style/noNonNullAssertion: required
+  const option: string = interaction.options.getString("option")!.trim()
 
   if (option.toLowerCase() === "all") {
     await DB.resetPoints()

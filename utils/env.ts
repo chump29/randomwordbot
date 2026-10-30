@@ -1,10 +1,12 @@
 import { printVars } from "@postfmly/logger"
 import { type Optional } from "@postfmly/types"
 
+import { type HexColorString } from "discord.js"
 import { bool, cleanEnv, type ExactValidator, makeExactValidator, str, url } from "envalid"
 import { anyOf, caseInsensitive, charIn, createRegExp, exactly, wordChar } from "magic-regexp"
 import {
   check,
+  custom,
   digits,
   integer,
   literal,
@@ -27,7 +29,7 @@ const MAX_ID_LEN: number = 19
 
 const COLOR_LEN: number = 6
 
-// * NOTE: Comes from min/max word length in random-words
+// ! NOTE: Comes from random-words
 const MIN_WORD_LEN: number = 2
 const MAX_WORD_LEN: number = 14
 
@@ -50,7 +52,8 @@ const ColorSchema = pipe(
     createRegExp(exactly("#").at.lineStart(), charIn("0123456789abcdef").times(COLOR_LEN).at.lineEnd(), [
       caseInsensitive
     ])
-  )
+  ),
+  custom<HexColorString>((_: unknown): boolean => true)
 )
 const LengthSchema = pipe(
   StringSchema,
@@ -80,11 +83,13 @@ const TokenSchema = pipe(
 )
 
 const idValidator: ExactValidator<string> = makeExactValidator<string>((s: string): string => parse(IdSchema, s))
-const colorValidator: ExactValidator<string> = makeExactValidator<string>((s: string): string => parse(ColorSchema, s))
+const colorValidator: ExactValidator<HexColorString> = makeExactValidator<HexColorString>(
+  (s: string): HexColorString => parse(ColorSchema, s)
+)
 const portValidator: ExactValidator<"random" | number> = makeExactValidator<"random" | number>(
   (s: string): "random" | number => parse(PortSchema, s)
 )
-const LengthValidator: ExactValidator<number> = makeExactValidator<number>((s: string): number =>
+const lengthValidator: ExactValidator<number> = makeExactValidator<number>((s: string): number =>
   parse(LengthSchema, s)
 )
 const pointsValidator: ExactValidator<number> = makeExactValidator<number>((s: string): number =>
@@ -121,8 +126,8 @@ const env = cleanEnv(Bun.env, {
   LOGO_PATH: str({ default: "./utils/images" }),
   LOGO_PORT: portValidator({ default: "random" }),
   LOGO_URL: url({ testDefault: fakeURL }),
-  MAX_LENGTH: LengthValidator({ default: 0 }),
-  MIN_LENGTH: LengthValidator({ default: 3 }),
+  MAX_LENGTH: lengthValidator({ default: 0 }),
+  MIN_LENGTH: lengthValidator({ default: 3 }),
   NAME: str({ default: "RandomWordBot" }),
   POINTS: pointsValidator({ default: 1 }),
   TOKEN: tokenValidator({ testDefault: fakeToken })
