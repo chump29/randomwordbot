@@ -16,8 +16,8 @@ type DBType = ReturnType<typeof drizzle>
 
 interface IRandomWordBotDatabase {
   close: () => void
-  readonly db: Nullable<DBType>
   getLeaderboard: () => Promise<IPoints[]>
+  readonly instance: Nullable<DBType>
   open: () => void
   resetPoints: (name?: string) => Promise<void>
   updatePoints: (name: string) => Promise<void>
@@ -25,10 +25,10 @@ interface IRandomWordBotDatabase {
 
 class RandomWordBotDatabase implements IRandomWordBotDatabase {
   private client: Nullable<Database> = null
-  db: Nullable<DBType> = null
+  instance: Nullable<DBType> = null
 
   open(): void {
-    if (this.db) {
+    if (this.instance) {
       if (env.DEBUG) {
         info("⚠️  Database already open")
       }
@@ -36,7 +36,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
       return
     }
 
-    const dbPathName: string = join(env.DB_PATH, env.DB_NAME)
+    const dbPathName = join(env.DB_PATH, env.DB_NAME)
 
     this.client = new Database(dbPathName, {
       create: true,
@@ -51,12 +51,12 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
       PRAGMA wal_checkpoint(TRUNCATE);
     `)
 
-    this.db = drizzle({
+    this.instance = drizzle({
       client: this.client,
       jit: true
     })
 
-    migrate(this.db, {
+    migrate(this.instance, {
       migrationsFolder: env.DB_PATH
     })
 
@@ -66,7 +66,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
   }
 
   close(): void {
-    if (!this.db) {
+    if (!this.instance) {
       if (env.DEBUG) {
         info("⚠️  Database already closed")
       }
@@ -77,7 +77,7 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
     this.client?.close()
     this.client = null
 
-    this.db = null
+    this.instance = null
 
     if (env.DEBUG) {
       info("⏹️  Database closed")
@@ -85,11 +85,11 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
   }
 
   private dbCheck(): DBType {
-    if (!this.db) {
+    if (!this.instance) {
       throw new Error("Database not open")
     }
 
-    return this.db
+    return this.instance
   }
 
   async updatePoints(name: string): Promise<void> {
@@ -119,6 +119,4 @@ class RandomWordBotDatabase implements IRandomWordBotDatabase {
   }
 }
 
-const DB: IRandomWordBotDatabase = new RandomWordBotDatabase()
-
-export { DB }
+export const DB = new RandomWordBotDatabase()

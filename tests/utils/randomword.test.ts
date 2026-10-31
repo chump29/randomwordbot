@@ -1,14 +1,21 @@
-import { beforeAll, describe, expect, jest, mock, spyOn, test } from "bun:test"
-
-import { type Nullable } from "@postfmly/types"
+import { beforeAll, describe, expect, mock, spyOn, test } from "bun:test"
 
 import { fakerEN_US as fake } from "@faker-js/faker"
-import { type Channel, ChannelType, type Client, type GuildMember, type Message, type User } from "discord.js"
+import {
+  type Channel,
+  ChannelType,
+  type Client,
+  type GuildMember,
+  type Message,
+  type TextChannel,
+  type User
+} from "discord.js"
 
+import { type DB } from "../../utils/db.ts"
 import { env } from "../../utils/env.ts"
 import { RandomWord } from "../../utils/randomWord.ts"
 
-const mockUpdatePoints: jest.Mock = jest.fn()
+const mockUpdatePoints = mock<(typeof DB)["updatePoints"]>()
 
 mock.module("../../utils/db.ts", (): unknown => ({
   DB: {
@@ -19,7 +26,7 @@ mock.module("../../utils/db.ts", (): unknown => ({
 // * NOTE: suppress console output
 spyOn(console, "info").mockImplementation((): void => undefined)
 
-const mockSend: jest.Mock = jest.fn()
+const mockSend = mock<TextChannel["send"]>()
 
 beforeAll(async (): Promise<void> => {
   await RandomWord.init(
@@ -41,11 +48,11 @@ describe("randomWord", (): void => {
   })
 
   test("checkForWord", async (): Promise<void> => {
-    const word: Nullable<string> = RandomWord.WORD
+    const word = RandomWord.WORD
 
     expect(word).not.toBeNull()
 
-    const mockMessage: Message = createMock<Message>({
+    const mockMessage = createMock<Message>({
       content: fake.helpers.fake(`{{lorem.word}} ${RandomWord.WORD} {{lorem.word}}`),
       member: createMock<GuildMember>({
         user: createMock<User>({
@@ -57,12 +64,11 @@ describe("randomWord", (): void => {
 
     await RandomWord.checkForWord(mockMessage)
 
-    expect(mockSend).toHaveBeenCalledTimes(1)
+    expect(mockSend).toHaveBeenCalledOnce()
 
-    expect(mockUpdatePoints).toHaveBeenCalledTimes(1)
+    expect(mockUpdatePoints).toHaveBeenCalledOnce()
 
-    const { calls } = mockSend.mock
-    const payload: unknown = calls[0]?.[0]
+    const payload = mockSend.mock.calls[0]?.[0]
     if (!payload || typeof payload !== "object") {
       throw new Error("Payload not found")
     }

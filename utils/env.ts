@@ -6,8 +6,8 @@ import { bool, cleanEnv, type ExactValidator, makeExactValidator, str, url } fro
 import { anyOf, caseInsensitive, charIn, createRegExp, exactly, wordChar } from "magic-regexp"
 import {
   check,
-  custom,
   digits,
+  guard,
   integer,
   literal,
   maxLength,
@@ -24,36 +24,37 @@ import {
   union
 } from "valibot"
 
-const MIN_ID_LEN: number = 17
-const MAX_ID_LEN: number = 19
+const MIN_ID_LEN = 17
+const MAX_ID_LEN = 19
 
-const COLOR_LEN: number = 6
+const COLOR_LEN = 6
 
-// ! NOTE: Comes from random-words
-const MIN_WORD_LEN: number = 2
-const MAX_WORD_LEN: number = 14
+// * NOTE: comes from https://github.com/apostrophecms/random-words/blob/main/index.js#L4
+const MIN_WORD_LEN = 2
+const MAX_WORD_LEN = 14
 
-const MIN_PORT: number = 1024
-const MAX_PORT: number = 65_535
+const MIN_PORT = 1024
+const MAX_PORT = 65_535
 
-const UID_MIN_LEN: number = 23
-const UID_MAX_LEN: number = 28
-const TS_MIN_LEN: number = 6
-const TS_MAX_LEN: number = 7
-const HMAC_MIN_LEN: number = 27
-const HMAC_MAX_LEN: number = 38
+const UID_MIN_LEN = 23
+const UID_MAX_LEN = 28
+const TS_MIN_LEN = 6
+const TS_MAX_LEN = 7
+const HMAC_MIN_LEN = 27
+const HMAC_MAX_LEN = 38
 
 const StringSchema = pipe(string(), trim(), nonEmpty())
 const IdSchema = pipe(StringSchema, digits(), minLength(MIN_ID_LEN), maxLength(MAX_ID_LEN))
 const ColorSchema = pipe(
   StringSchema,
   regex(
-    // ! Desired: /^(?:#[\da-f]{6})$/i
-    createRegExp(exactly("#").at.lineStart(), charIn("0123456789abcdef").times(COLOR_LEN).at.lineEnd(), [
-      caseInsensitive
-    ])
+    createRegExp(
+      exactly("#").at.lineStart(),
+      charIn.from("0", "9").orChar.from("a", "f").times(COLOR_LEN).at.lineEnd(),
+      [caseInsensitive]
+    )
   ),
-  custom<HexColorString>((_: unknown): boolean => true)
+  guard((_: string): _ is HexColorString => true)
 )
 const LengthSchema = pipe(
   StringSchema,
@@ -104,7 +105,7 @@ let fakeToken: Optional<string>
 if (Bun.env.NODE_ENV === "test") {
   const { fakerEN_US: fake } = await import("@faker-js/faker")
 
-  let chars: string = "[0-9]"
+  let chars = "[0-9]"
   fakeId = fake.helpers.fromRegExp(`${chars}{${MIN_ID_LEN},${MAX_ID_LEN}}`)
 
   fakeURL = fake.image.url({ height: 64, width: 64 })

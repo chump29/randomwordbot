@@ -1,8 +1,7 @@
 import { info } from "@postfmly/logger"
-import { type Nullable, type Optional } from "@postfmly/types"
 
 import { default as pluralize } from "@jarrodek/pluralize"
-import { type Channel, ChannelType, type Client, type Message, MessageFlags, type TextChannel } from "discord.js"
+import { ChannelType, type Client, type Message, MessageFlags, type TextChannel } from "discord.js"
 import { caseInsensitive, createRegExp, exactly } from "magic-regexp"
 import { wordList } from "random-words"
 import { match, P } from "ts-pattern"
@@ -86,7 +85,7 @@ class RandomWordBot implements IRandomWordBot {
 
   // * /word
   getNewWord(): void {
-    const word: Optional<string> = this.WORDS[this.random()]
+    const word = this.WORDS[this.random()]
     if (!word) {
       throw new Error("Could not get word")
     }
@@ -100,12 +99,9 @@ class RandomWordBot implements IRandomWordBot {
     }
   }
 
-  private static readonly isTextChannel = (channel: unknown): channel is TextChannel =>
-    channel !== null && typeof channel === "object"
-
   async init(client: Client): Promise<void> {
-    const channel: Nullable<Channel> = await client.channels.fetch(env.CHANNEL_ID)
-    if (!RandomWordBot.isTextChannel(channel) || channel.type !== ChannelType.GuildText) {
+    const channel = await client.channels.fetch(env.CHANNEL_ID)
+    if (channel?.type !== ChannelType.GuildText) {
       throw new Error("Could not get channel")
     }
 
@@ -135,9 +131,9 @@ class RandomWordBot implements IRandomWordBot {
     }
 
     if (this.REGEXP.test(message.content)) {
-      const points: string = pluralize("point", env.POINTS, true)
+      const points = pluralize("point", env.POINTS, true)
 
-      const name: string = message.member.user.displayName
+      const name = message.member.user.displayName
 
       await this.CHANNEL.send({
         content: `-# > \`${name}\` said \`${this.WORD}\`\n-# > Awarding \`${points}\``,
@@ -155,6 +151,4 @@ class RandomWordBot implements IRandomWordBot {
   }
 }
 
-const RandomWord: IRandomWordBot = new RandomWordBot()
-
-export { RandomWord }
+export const RandomWord = new RandomWordBot()

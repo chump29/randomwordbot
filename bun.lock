@@ -6,11 +6,10 @@
       "name": "randomwordbot",
       "dependencies": {
         "@jarrodek/pluralize": "^1.0.2",
-        "@postfmly/checkrate": "^2.0.10",
-        "@postfmly/logger": "^1.2.5",
-        "@postfmly/logoserver": "^1.3.22",
-        "@postfmly/types": "^1.0.11",
-        "discord.js": "^14.27.0",
+        "@postfmly/checkrate": "^2.0.11",
+        "@postfmly/logger": "^1.2.6",
+        "@postfmly/logoserver": "^1.3.23",
+        "discord.js": "^14.28.0",
         "drizzle-orm": "1.0.0-rc.5",
         "envalid": "^9.0.0",
         "magic-regexp": "^0.11.2",
@@ -21,7 +20,8 @@
       },
       "devDependencies": {
         "@faker-js/faker": "^10.6.0",
-        "@postfmly/config": "^1.6.15",
+        "@postfmly/config": "^1.6.17",
+        "@postfmly/types": "^1.0.12",
         "cve-lite-cli": "^1.40.0",
         "drizzle-kit": "1.0.0-rc.5",
         "expect-type": "^1.4.0",
@@ -204,7 +204,7 @@
 
     "@ctrl/tinycolor": ["@ctrl/tinycolor@4.2.2", "https://npm.postfmly.com/@ctrl/tinycolor/-/tinycolor-4.2.2.tgz", {}, "sha512-9rQHijqB2Rq6qOEC/xHaA6aPlsKGi5kmCQW50O1asn9g63XFeD5NmBwysriistW5Xx0JPafyD/TA7yk2S3pXGQ=="],
 
-    "@discordjs/builders": ["@discordjs/builders@1.14.1", "https://npm.postfmly.com/@discordjs/builders/-/builders-1.14.1.tgz", { "dependencies": { "@discordjs/formatters": "^0.6.2", "@discordjs/util": "^1.2.0", "@sapphire/shapeshift": "^4.0.0", "discord-api-types": "^0.38.40", "fast-deep-equal": "^3.1.3", "ts-mixer": "^6.0.4", "tslib": "^2.6.3" } }, "sha512-gSKkhXLqs96TCzk66VZuHHl8z2bQMJFGwrXC0f33ngK+FLNau4hU1PYny3DNJfNdSH+gVMzE85/d5FQ2BpcNwQ=="],
+    "@discordjs/builders": ["@discordjs/builders@1.15.0", "https://npm.postfmly.com/@discordjs/builders/-/builders-1.15.0.tgz", { "dependencies": { "@discordjs/formatters": "^0.6.2", "@discordjs/util": "^1.2.0", "@sapphire/shapeshift": "^4.0.0", "discord-api-types": "^0.38.50", "fast-deep-equal": "^3.1.3", "ts-mixer": "^6.0.4", "tslib": "^2.6.3" } }, "sha512-AifaDWTw6WUDhKBn8E6mwwoyjDAcfsYq+ZE0nKSu1dMH1NLR22D3hGkNx+ctEv8NqHEHdAZnP5REteHDmn1lkA=="],
 
     "@discordjs/collection": ["@discordjs/collection@1.5.3", "https://npm.postfmly.com/@discordjs/collection/-/collection-1.5.3.tgz", {}, "sha512-SVb428OMd3WO1paV3rm6tSjM4wC+Kecaa1EUGX7vc6/fddvw/6lg90z4QtCqm21zvVe92vMMDt9+DkIvjXImQQ=="],
 
@@ -234,15 +234,15 @@
 
     "@lukeed/ms": ["@lukeed/ms@2.0.2", "https://npm.postfmly.com/@lukeed/ms/-/ms-2.0.2.tgz", {}, "sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA=="],
 
-    "@postfmly/checkrate": ["@postfmly/checkrate@2.0.10", "https://npm.postfmly.com/@postfmly/checkrate/-/checkrate-2.0.10.tgz", { "dependencies": { "@jarrodek/pluralize": "^1.0.2", "@lukeed/ms": "^2.0.2", "@postfmly/logger": "^1.2.5", "dayjs": "^1.11.23", "envalid": "^9.0.0" } }, "sha512-5iNNBARxhum1LfGvQ70Yfvs1UpLcopmPfuehbuDvceaSviJmHpraUm8yrDbxQ/P0OZNw+UQOCgTu147YYK0xCg=="],
+    "@postfmly/checkrate": ["@postfmly/checkrate@2.0.11", "https://npm.postfmly.com/@postfmly/checkrate/-/checkrate-2.0.11.tgz", { "dependencies": { "@jarrodek/pluralize": "^1.0.2", "@lukeed/ms": "^2.0.2", "@postfmly/logger": "^1.2.6", "dayjs": "^1.11.23", "envalid": "^9.0.0" } }, "sha512-XNf3Yxye6Uj4gNhT1P6KByrg4cwraE6SpeFIJwQSW6HLkvkyE1XzYhOGbuQRCTL8Ic8Ib9Maf7bQgZ7gnJqYVw=="],
 
-    "@postfmly/config": ["@postfmly/config@1.6.15", "https://npm.postfmly.com/@postfmly/config/-/config-1.6.15.tgz", { "dependencies": { "@biomejs/biome": "^2.6.4", "@types/bun": "^1.4.4", "@types/node": "^26.6.6", "cspell": "^10.4.0", "globals": "^17.13.0" }, "bin": { "link-configs": "bin/link-configs" } }, "sha512-8UO3PWqewL/y/S2SrRnquCmUML8g6upHB40PuHwrcb2Jf5VzwI/l7nyEenK1RsSLStrICWLcEZEubkd+opeiSg=="],
+    "@postfmly/config": ["@postfmly/config@1.6.17", "https://npm.postfmly.com/@postfmly/config/-/config-1.6.17.tgz", { "dependencies": { "@biomejs/biome": "^2.6.4", "@types/bun": "^1.4.4", "@types/node": "^26.6.6", "cspell": "^10.4.0", "globals": "^17.13.0" }, "bin": { "link-configs": "bin/link-configs" } }, "sha512-RQglifRPpCUCrrtTuaYeqKfQTL4Rd2NY7FZG3iyQUomWvVMLbRsMaCzBd9nqNL2pYrawWU62gfiZ8dhuMI8bGQ=="],
 
-    "@postfmly/logger": ["@postfmly/logger@1.2.5", "https://npm.postfmly.com/@postfmly/logger/-/logger-1.2.5.tgz", { "dependencies": { "@ctrl/tinycolor": "^4.2.2", "ansis": "^4.4.0", "browser-or-node": "^3.0.0", "dayjs": "^1.11.23", "hex-color-to-color-name": "^2.0.8", "ts-pattern": "^5.9.2" } }, "sha512-GBfWJmSA0mPvXc3oi4s3hoym5sQ3jPAjtiop/b4q/nodJtDkJh12XqnkSb4mFHtNc1oUIRfQYl9PugjmZilZrw=="],
+    "@postfmly/logger": ["@postfmly/logger@1.2.6", "https://npm.postfmly.com/@postfmly/logger/-/logger-1.2.6.tgz", { "dependencies": { "@ctrl/tinycolor": "^4.2.2", "ansis": "^4.4.0", "browser-or-node": "^3.0.0", "dayjs": "^1.11.23", "hex-color-to-color-name": "^2.0.8", "ts-pattern": "^5.9.2" } }, "sha512-coSooy/PoOTaXesGyBEf9qKTZ5RWTB3uOM0gAgGZ9ALFCAPALzSAp3qo9I5k1vjhx0NeXiazcuOC1t1uWpDubA=="],
 
-    "@postfmly/logoserver": ["@postfmly/logoserver@1.3.22", "https://npm.postfmly.com/@postfmly/logoserver/-/logoserver-1.3.22.tgz", { "dependencies": { "@hono/bun": "^1.0.1", "@postfmly/logger": "^1.2.5", "@postfmly/types": "^1.0.11", "envalid": "^9.0.0", "get-port": "^7.2.0", "hono": "^4.13.14", "http-status": "^2.1.0", "valibot": "^1.5.0" } }, "sha512-M47Z5rqlDra5qfxO7TnLxr9DqBEE9Gyjco3XddrQqPPBRAAYoM91ayIZRRzEBwTsCy8kJ4xep4aBDPoTPLYKMA=="],
+    "@postfmly/logoserver": ["@postfmly/logoserver@1.3.23", "https://npm.postfmly.com/@postfmly/logoserver/-/logoserver-1.3.23.tgz", { "dependencies": { "@hono/bun": "^1.0.1", "@postfmly/logger": "^1.2.6", "@postfmly/types": "^1.0.12", "envalid": "^9.0.0", "get-port": "^7.2.0", "hono": "^4.13.14", "http-status": "^2.1.0", "valibot": "^1.5.0" } }, "sha512-McRw1Bik5w7P7ZqOPwECAh61nSS5sFGfuedhyvC1dtwT5ErFjOQKNI+5MYmrVrI/1SEL6V6FrNBrXb6reutDew=="],
 
-    "@postfmly/types": ["@postfmly/types@1.0.11", "https://npm.postfmly.com/@postfmly/types/-/types-1.0.11.tgz", {}, "sha512-IU81oA+tjehGoPM0hJw00MezK6m++mcfMYdZHRe/rYUGI5/0/khgnNokqL6icE3uJkJz72/kUlvmbWi9YWJxUw=="],
+    "@postfmly/types": ["@postfmly/types@1.0.12", "https://npm.postfmly.com/@postfmly/types/-/types-1.0.12.tgz", {}, "sha512-NEVJjapw2VrVhZC7+ptgz2E/vrOlxr7UxlC+WgvYO8lEtWl2kBJ9yV1wkYHbBve3boOtf+5qd4FFVb9lUobwPA=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "https://npm.postfmly.com/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
@@ -322,7 +322,7 @@
 
     "discord-api-types": ["discord-api-types@0.38.57", "https://npm.postfmly.com/discord-api-types/-/discord-api-types-0.38.57.tgz", {}, "sha512-R1CTSSt4RshqCq23j2Xq2ZscvzB4LzG9OB1CYQdKUGdw8Ti/oF/72EEtK2mNpagG/Vj9NcBT7dw9lKLf+Dacfg=="],
 
-    "discord.js": ["discord.js@14.27.0", "https://npm.postfmly.com/discord.js/-/discord.js-14.27.0.tgz", { "dependencies": { "@discordjs/builders": "^1.14.1", "@discordjs/collection": "1.5.3", "@discordjs/formatters": "^0.6.2", "@discordjs/rest": "^2.6.2", "@discordjs/util": "^1.2.0", "@discordjs/ws": "^1.2.3", "@sapphire/snowflake": "3.5.5", "discord-api-types": "^0.38.49", "fast-deep-equal": "3.1.3", "lodash.snakecase": "4.1.1", "magic-bytes.js": "^1.13.0", "tslib": "^2.6.3", "undici": "^6.27.0" } }, "sha512-qHbFlFG2N7y3LjPySYsL6A1+BnX6bkTVgo842EX0CqVPk/KTMwZkojPHEXKsQUpWZNyz5BISNHK1cPpQw0+m4A=="],
+    "discord.js": ["discord.js@14.28.0", "https://npm.postfmly.com/discord.js/-/discord.js-14.28.0.tgz", { "dependencies": { "@discordjs/builders": "^1.15.0", "@discordjs/collection": "1.5.3", "@discordjs/formatters": "^0.6.2", "@discordjs/rest": "^2.6.3", "@discordjs/util": "^1.2.0", "@discordjs/ws": "^1.2.3", "@sapphire/snowflake": "3.5.5", "discord-api-types": "^0.38.50", "fast-deep-equal": "3.1.3", "lodash.snakecase": "4.1.1", "magic-bytes.js": "^1.13.0", "tslib": "^2.6.3", "undici": "^6.27.0" } }, "sha512-l/mIllvqvWQDWqa8NPw7b2AU2tM9oPWiWR6Jk54DTNlUdyArXbi+Y0m0sLIUtQ9O0x+tyVpDMCG6K6Kf0yeAWQ=="],
 
     "drizzle-kit": ["drizzle-kit@1.0.0-rc.5", "https://npm.postfmly.com/drizzle-kit/-/drizzle-kit-1.0.0-rc.5.tgz", { "peerDependencies": { "drizzle-orm": ">=1.0.0-rc.5" }, "optionalPeers": ["drizzle-orm"], "bin": { "drizzle-kit": "bin.cjs" } }, "sha512-8glQN7iFK3e1aOIoRit1NtslcsqE/rnlqNw/1jUC5Ph4RFVh/E5Jricxd6Nu2ugj2HlFZlZ6O4006AwqJ9e24g=="],
 
@@ -456,7 +456,7 @@
 
     "ts-pattern": ["ts-pattern@5.9.2", "https://npm.postfmly.com/ts-pattern/-/ts-pattern-5.9.2.tgz", {}, "sha512-qAf+7M7Jjk7uebZeIo9uEzyintfuRtgHdzM9dqxRKcMi2dt76Ec+FH2wW3bnU9TuGLkZIJLoLs7cCQnU7Tu8ig=="],
 
-    "tslib": ["tslib@2.8.1", "https://npm.postfmly.com/tslib/-/tslib-2.8.1.tgz", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
+    "tslib": ["tslib@2.9.1", "https://npm.postfmly.com/tslib/-/tslib-2.9.1.tgz", {}, "sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA=="],
 
     "tunnel-agent": ["tunnel-agent@0.6.0", "https://npm.postfmly.com/tunnel-agent/-/tunnel-agent-0.6.0.tgz", { "dependencies": { "safe-buffer": "^5.0.1" } }, "sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w=="],
 
@@ -482,7 +482,7 @@
 
     "wrappy": ["wrappy@1.0.2", "https://npm.postfmly.com/wrappy/-/wrappy-1.0.2.tgz", {}, "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="],
 
-    "ws": ["ws@8.22.0", "https://npm.postfmly.com/ws/-/ws-8.22.0.tgz", { "peerDependencies": { "bufferutil": "^4.0.1", "utf-8-validate": ">=5.0.2" }, "optionalPeers": ["bufferutil", "utf-8-validate"] }, "sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg=="],
+    "ws": ["ws@8.22.1", "https://npm.postfmly.com/ws/-/ws-8.22.1.tgz", { "peerDependencies": { "bufferutil": "^4.0.1", "utf-8-validate": ">=5.0.2" }, "optionalPeers": ["bufferutil", "utf-8-validate"] }, "sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g=="],
 
     "xdg-basedir": ["xdg-basedir@5.1.0", "https://npm.postfmly.com/xdg-basedir/-/xdg-basedir-5.1.0.tgz", {}, "sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ=="],
 

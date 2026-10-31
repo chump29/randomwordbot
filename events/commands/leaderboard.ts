@@ -22,9 +22,9 @@ const create = (): RESTPostAPIChatInputApplicationCommandsJSONBody =>
     .setContexts(InteractionContextType.Guild)
     .toJSON()
 
-const pr: Intl.PluralRules = new Intl.PluralRules("en-US", { type: "ordinal" })
+const pr = new Intl.PluralRules("en-US", { type: "ordinal" })
 
-const suffixes: Record<Intl.LDMLPluralRule, string> = {
+const suffixes = {
   few: "rd",
   many: "th", // unused, required
   one: "st",
@@ -39,11 +39,11 @@ const getEmbed = (points: IPoints[]): APIEmbedField[] => {
   const fields: APIEmbedField[] = []
 
   if (points.length > 0) {
-    const allNames: string = points
+    const allNames = points
       .map((p: IPoints, i: number): string => `-# ${ordinal(i + 1)}: ${i === 0 ? "👑 " : ""}${p.name}`)
       .join("\n")
 
-    const allPoints: string = points.map((p: IPoints): string => `-# ${p.points.toLocaleString()}`).join("\n")
+    const allPoints = points.map((p: IPoints): string => `-# ${p.points.toLocaleString()}`).join("\n")
 
     fields.push(
       ...([

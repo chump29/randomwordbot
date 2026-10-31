@@ -1,6 +1,6 @@
 import { default as process } from "node:process"
 
-import { beforeAll, describe, expect, type jest, spyOn, test } from "bun:test"
+import { beforeAll, describe, expect, spyOn, test } from "bun:test"
 
 import { simpleFaker as fake } from "@faker-js/faker"
 import { type ClientUser, type Client as DiscordClient } from "discord.js"
@@ -9,11 +9,12 @@ import { Client } from "../../utils/client.ts"
 import { env } from "../../utils/env.ts"
 
 // * NOTE: suppress console output
-const infoSpy: jest.Mock = spyOn(console, "info").mockImplementation((): void => undefined)
-// biome-ignore lint/nursery/noUnsafeTypeAssertion: suppress output
-const exitSpy: jest.Mock = spyOn(process, "exit").mockImplementation((): never => undefined as never)
+const infoSpy = spyOn(console, "info").mockImplementation((): void => undefined)
 
-const tag: string = `${env.NAME}#${fake.string.numeric({ allowLeadingZeros: false, length: 4 })}`
+// biome-ignore lint/nursery/noUnsafeTypeAssertion: suppress output
+const exitSpy = spyOn(process, "exit").mockImplementation((): never => undefined as never)
+
+const tag = `${env.NAME}#${fake.string.numeric({ allowLeadingZeros: false, length: 4 })}`
 
 beforeAll(async (): Promise<void> => {
   await Client.init(
@@ -30,14 +31,16 @@ describe("client", (): void => {
   test("init", async (): Promise<void> => {
     await Client.shutdown()
 
-    const TIMES: number = 11
+    const TIMES = 11
     expect(infoSpy).toHaveBeenCalledTimes(TIMES)
 
-    const LINE_NUM: number = 5
+    const LINE_NUM = 5
     expect(infoSpy).toHaveBeenNthCalledWith(LINE_NUM, expect.any(String), expect.stringContaining(env.NAME))
     expect(infoSpy).toHaveBeenNthCalledWith(LINE_NUM, expect.any(String), expect.stringContaining(tag))
 
-    expect(exitSpy).toHaveBeenCalledTimes(1)
+    expect(exitSpy).toHaveBeenCalledOnce()
     expect(exitSpy).toHaveBeenCalledWith(0)
+
+    await Client.shutdown() // * NOTE: tests isShutdown
   })
 })

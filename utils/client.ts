@@ -105,6 +105,4 @@ class RandomWordClient implements IRandomWordClient {
   }
 }
 
-const Client: IRandomWordClient = new RandomWordClient()
-
-export { Client }
+export const Client = new RandomWordClient()

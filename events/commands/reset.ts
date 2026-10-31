@@ -33,18 +33,18 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
   await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
   // biome-ignore lint/style/noNonNullAssertion: required
-  const option: string = interaction.options.getString("option")!.trim()
+  const option = interaction.options.getString("option")!.trim()
 
   if (option.toLowerCase() === "all") {
     await DB.resetPoints()
 
     await interaction.editReply({ content: "-# > ↩️ Reset points for `ALL`" })
   } else {
-    const userId: Optional<string> = option.match(
+    const userId = option.match(
       createRegExp(exactly("<@").at.lineStart(), oneOrMore(wordChar).groupedAs("userId"), exactly(">").at.lineEnd())
     )?.groups.userId
     if (!userId) {
-      const msg: string = `❌ Could not find user: ${option}`
+      const msg = `❌ Could not find user: ${option}`
 
       await interaction.editReply({ content: `-# > ${msg}` })
 
@@ -55,7 +55,7 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
 
     const member: Optional<GuildMember> = await interaction.guild?.members.fetch(userId)
     if (!member) {
-      const msg: string = `❌ Could not find member: ${userId}`
+      const msg = `❌ Could not find member: ${userId}`
 
       await interaction.editReply({ content: `-# > ${msg}` })
 
@@ -64,7 +64,7 @@ const invoke = async (interaction: ChatInputCommandInteraction): Promise<void> =
       return
     }
 
-    const name: string = member.user.displayName
+    const name = member.user.displayName
 
     await DB.resetPoints(name)
 

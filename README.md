@@ -5,12 +5,12 @@
 ---
 
 ![Bun](https://img.shields.io/badge/Bun-1.4.4-informational?style=plastic&logo=bun) &nbsp;
-![discord.js](https://img.shields.io/badge/discord.js-14.27.0-informational?style=plastic&logo=discord.js) &nbsp;
+![discord.js](https://img.shields.io/badge/discord.js-14.28.0-informational?style=plastic&logo=discord.js) &nbsp;
 ![Drizzle](https://img.shields.io/badge/Drizzle-1.0.0--rc.5-informational?style=plastic&logo=drizzle)
 ![SQLite](https://img.shields.io/badge/SQLite-3.53.4-informational?style=plastic&logo=sqlite)
 
 ![CodeQL](https://github.com/chump29/randomwordbot/workflows/CodeQL/badge.svg) &nbsp;
-![Coverage](https://img.shields.io/badge/Coverage-78.02%25-success?style=plastic&logo=jest)
+![Coverage](https://img.shields.io/badge/Coverage-78.01%25-success?style=plastic&logo=jest)
 
 ![NO AI](https://img.shields.io/badge/NO-AI-orange?style=plastic "NO AI") &nbsp;
 ![License](https://img.shields.io/github/license/chump29/randomwordbot?style=plastic&color=blueviolet&label=License&logo=gplv3 "GPLv3") &nbsp; <!-- markdownlint-disable MD013 -->

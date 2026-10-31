@@ -2,7 +2,7 @@ import { default as assert } from "node:assert/strict"
 import { readdir } from "node:fs/promises"
 import { default as path } from "node:path"
 
-import { afterAll, beforeAll, describe, expect, jest, spyOn, test } from "bun:test"
+import { afterAll, beforeAll, describe, expect, mock, spyOn, test } from "bun:test"
 
 import { type Optional } from "@postfmly/types"
 
@@ -14,29 +14,26 @@ import {
   type ChatInputCommandInteraction,
   type Client,
   EmbedBuilder,
-  type RESTPostAPIChatInputApplicationCommandsJSONBody,
+  type TextChannel,
   type User
 } from "discord.js"
 import { match } from "ts-pattern"
 
 import { type IPoints, points } from "../../db/schema.ts"
+import { type ICreate } from "../../events/clientReady.ts"
+import { type IInvoke } from "../../events/interactionCreate.ts"
 import { author, version } from "../../package.json" with { type: "json" }
 import { DB } from "../../utils/db.ts"
 import { env } from "../../utils/env.ts"
 import { RandomWord } from "../../utils/randomWord.ts"
 
-interface ICommandFile {
-  create: () => RESTPostAPIChatInputApplicationCommandsJSONBody
-  invoke: (interaction: ChatInputCommandInteraction) => Promise<void>
-}
-
-const HEX_BASE: number = 16
-const COLOR_LEN: number = 6
+const HEX_BASE = 16
+const COLOR_LEN = 6
 const decimalToHex = (c: Optional<number>): string => (c ? `#${c.toString(HEX_BASE).padStart(COLOR_LEN, "0")}` : "N/A")
 
-const dir: string = "events/commands"
+const dir = "events/commands"
 
-const commands: string[] = (await readdir(dir)).filter((file: string): boolean => file.endsWith(".ts"))
+const commands = (await readdir(dir)).filter((file: string): boolean => file.endsWith(".ts"))
 
 // * NOTE: suppress console output
 spyOn(console, "info").mockImplementation((): void => undefined)
@@ -44,27 +41,30 @@ spyOn(console, "info").mockImplementation((): void => undefined)
 beforeAll(async (): Promise<void> => {
   DB.open()
 
-  assert(DB.db)
+  assert(DB.instance)
 
-  await DB.db.delete(points)
+  await DB.instance.delete(points)
 
-  const users: IPoints[] = Array.from(
-    { length: 2 },
-    (): IPoints =>
-      ({
-        name: fake.internet.username(),
-        points: fake.number.int({ max: 100, min: 1 })
-      }) satisfies IPoints
+  await DB.instance.insert(points).values(
+    Array.from(
+      { length: fake.number.int({ max: 3, min: 1 }) },
+      (): IPoints =>
+        ({
+          name: fake.internet.username(),
+          points: fake.number.int({ max: 100, min: 1 })
+        }) satisfies IPoints
+    )
   )
 
-  await DB.db.insert(points).values(users)
-
-  const mockChannel: Channel = createMock<Channel>({ type: ChannelType.GuildText })
+  const mockSend = mock<TextChannel["send"]>()
 
   await RandomWord.init(
     createMock<Client>({
       channels: {
-        fetch: mockChannel
+        fetch: createMock<Channel>({
+          send: mockSend,
+          type: ChannelType.GuildText
+        })
       }
     })
   )
@@ -76,13 +76,13 @@ afterAll((): void => {
 
 await Promise.all(
   commands.map(async (command: string): Promise<void> => {
-    const { create, invoke } = (await import(`${path.join("../..", dir)}/${command}`)) satisfies ICommandFile
+    const file: ICreate & IInvoke = await import(`${path.join("../..", dir)}/${command}`)
 
-    const name: string = path.basename(command, ".ts")
+    const name = path.basename(command, ".ts")
 
     describe(`/${name}`, (): void => {
       test("create", (): void => {
-        const c: RESTPostAPIChatInputApplicationCommandsJSONBody = create()
+        const c = file.create()
 
         expect(c.name).toBe(name)
         expect(c.description).not.toBeEmpty()
@@ -90,29 +90,32 @@ await Promise.all(
       })
 
       test("invoke", async (): Promise<void> => {
-        const mockDeferReply: jest.Mock = jest.fn()
-        const mockEditReply: jest.Mock = jest.fn()
+        const [mockDeferReply, mockEditReply] = [
+          mock<ChatInputCommandInteraction["deferReply"]>(),
+          mock<ChatInputCommandInteraction["editReply"]>()
+        ]
 
-        const mockInteraction: ChatInputCommandInteraction = createMock<ChatInputCommandInteraction>({
-          createdTimestamp: fake.date.past().getTime(),
-          deferReply: mockDeferReply,
-          editReply: mockEditReply,
-          user: createMock<User>({
-            displayName: fake.internet.displayName(),
-            username: fake.internet.username()
-          }),
-          options: {
-            getString: jest.fn().mockReturnValue("all")
-          }
-        })
+        expect(
+          await file.invoke(
+            createMock<ChatInputCommandInteraction>({
+              createdTimestamp: fake.date.past().getTime(),
+              deferReply: mockDeferReply,
+              editReply: mockEditReply,
+              user: createMock<User>({
+                displayName: fake.internet.displayName(),
+                username: fake.internet.username()
+              }),
+              options: {
+                getString: mock<() => string>().mockReturnValue("all")
+              }
+            })
+          )
+        ).toBeUndefined()
 
-        expect(await invoke(mockInteraction)).toBeUndefined()
+        expect(mockDeferReply).toHaveBeenCalledOnce()
+        expect(mockEditReply).toHaveBeenCalledOnce()
 
-        expect(mockDeferReply).toHaveBeenCalledTimes(1)
-        expect(mockEditReply).toHaveBeenCalledTimes(1)
-
-        const { calls } = mockEditReply.mock
-        const payload: unknown = calls[0]?.[0]
+        const payload = mockEditReply.mock.calls[0]?.[0]
         if (!payload || typeof payload !== "object") {
           throw new Error("Payload not found")
         }
@@ -129,7 +132,7 @@ await Promise.all(
           ;({ data } = EmbedBuilder.from(firstEmbed))
         }
 
-        let content: string = ""
+        let content = ""
         if ("content" in payload && typeof payload.content === "string") {
           ;({ content } = payload)
         }
