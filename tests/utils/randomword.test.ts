@@ -7,6 +7,10 @@ import { type DB } from "../../utils/db.ts"
 import { env } from "../../utils/env.ts"
 import { RandomWord } from "../../utils/randomWord.ts"
 
+if (!env.TEST_FULL) {
+  spyOn(console, "info").mockImplementation((): void => undefined)
+}
+
 const mockUpdatePoints = mock<(typeof DB)["updatePoints"]>()
 
 mock.module("../../utils/db.ts", (): unknown => ({
@@ -14,9 +18,6 @@ mock.module("../../utils/db.ts", (): unknown => ({
     updatePoints: mockUpdatePoints
   }
 }))
-
-// * NOTE: suppress console output
-spyOn(console, "info").mockImplementation((): void => undefined)
 
 const mockSend = mock<TextChannel["send"]>()
 

@@ -123,6 +123,7 @@ const env = cleanEnv(Bun.env, {
   MIN_LENGTH: lengthValidator({ default: 3 }),
   NAME: str({ default: "RandomWordBot" }),
   POINTS: pointsValidator({ default: 1 }),
+  TEST_FULL: bool({ default: false }),
   TOKEN: tokenValidator({ testDefault: fakeToken })
 })
 
