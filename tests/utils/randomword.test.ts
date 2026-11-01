@@ -1,15 +1,7 @@
 import { beforeAll, describe, expect, mock, spyOn, test } from "bun:test"
 
 import { fakerEN_US as fake } from "@faker-js/faker"
-import {
-  type Channel,
-  ChannelType,
-  type Client,
-  type GuildMember,
-  type Message,
-  type TextChannel,
-  type User
-} from "discord.js"
+import { type Channel, ChannelType, type Client, type GuildMember, type Message, type TextChannel } from "discord.js"
 
 import { type DB } from "../../utils/db.ts"
 import { env } from "../../utils/env.ts"
@@ -55,10 +47,10 @@ describe("randomWord", (): void => {
     const mockMessage = createMock<Message>({
       content: fake.helpers.fake(`{{lorem.word}} ${RandomWord.WORD} {{lorem.word}}`),
       member: createMock<GuildMember>({
-        user: createMock<User>({
+        user: {
           bot: false,
           displayName: fake.internet.displayName()
-        })
+        }
       })
     })
 
